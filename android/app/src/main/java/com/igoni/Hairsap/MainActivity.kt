@@ -1,4 +1,4 @@
-package com.hairsap
+package com.igoni.Hairsap
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

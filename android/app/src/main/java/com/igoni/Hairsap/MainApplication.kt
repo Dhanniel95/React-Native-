@@ -1,4 +1,4 @@
-package com.hairsap
+package com.igoni.Hairsap
 
 import android.app.Application
 import com.facebook.react.PackageList
