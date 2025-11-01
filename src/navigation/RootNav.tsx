@@ -8,6 +8,7 @@ import {
     ZegoUIKitPrebuiltCallInCallScreen,
     ZegoUIKitPrebuiltCallFloatingMinimizedView,
 } from '@zegocloud/zego-uikit-prebuilt-call-rn';
+import Test2 from '../screens/Test2';
 
 const Stack = createStackNavigator();
 
@@ -19,8 +20,10 @@ const RootNav = () => {
                     headerShown: false,
                     presentation: 'card',
                 }}
+                initialRouteName="Test2"
             >
                 <Stack.Screen name="Test" component={Test} />
+                <Stack.Screen name="Test2" component={Test2} />
                 <Stack.Screen
                     name="ZegoUIKitPrebuiltCallWaitingScreen"
                     component={ZegoUIKitPrebuiltCallWaitingScreen}

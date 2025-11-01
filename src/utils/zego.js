@@ -1,33 +1,26 @@
 import { Image, View } from 'react-native';
+
 import * as ZIM from 'zego-zim-react-native';
-import * as ZPNs from 'zego-zpns-react-native';
+
 import { ZegoLayoutMode } from '@zegocloud/zego-uikit-rn';
 import ZegoUIKitPrebuiltCallService, {
     ZegoInvitationType,
     ZegoMenuBarButtonName,
-    ZegoMultiCertificate,
 } from '@zegocloud/zego-uikit-prebuilt-call-rn';
-import * as Navigation from '../utils/navigation';
 
 const notificationStyle = 'CustomView';
 
-export const onUserLogin = async (userID, userName) => {
+export const onUserLogin = async (userID, userName, props) => {
     return ZegoUIKitPrebuiltCallService.init(
         1499669791,
         'fef5cd5708bd1f97d3d8c885079eb7c167e25cf0efd5706175f80a9e86416ecb',
         userID,
         userName,
-        [ZIM, ZPNs],
+        [ZIM],
         {
             ringtoneConfig: {
                 incomingCallFileName: 'zego_incoming.mp3',
                 outgoingCallFileName: 'zego_outgoing.mp3',
-            },
-            // isIOSSandboxEnvironment: undefined,   // false for TestFlight, true for debug, undefined for auto
-            certificateIndex: ZegoMultiCertificate.first,
-            androidNotificationConfig: {
-                channelID: 'ZegoUIKit',
-                channelName: 'ZegoUIKit',
             },
             avatarBuilder: ({ userInfo }) => {
                 return (
@@ -124,11 +117,7 @@ export const onUserLogin = async (userID, userName) => {
                             callInvitationData.invitees.length > 1
                                 ? ZegoLayoutMode.gallery
                                 : ZegoLayoutMode.pictureInPicture,
-                        config: {
-                            removeViewWhenAudioVideoUnavailable: false,
-                        },
                     },
-                    // foregroundBuilder: () => <ZegoCountdownLabel maxDuration={10} onCountdownFinished={() => { console.log("Countdown finished!!"); ZegoUIKitPrebuiltCallService.hangUp(true); }} />,
                     onCallEnd: (callID, reason, duration) => {
                         console.log(
                             '########CallWithInvitation onCallEnd',
@@ -136,14 +125,13 @@ export const onUserLogin = async (userID, userName) => {
                             reason,
                             duration,
                         );
-                        Navigation.navigate('Test');
+                        props.navigation.navigate('Test2');
                     },
                     timingConfig: {
                         isDurationVisible: true,
                         onDurationUpdate: duration => {
                             console.log(
                                 '########CallWithInvitation onDurationUpdate',
-                                userID,
                                 duration,
                             );
                             if (duration === 10 * 60) {
@@ -159,12 +147,11 @@ export const onUserLogin = async (userID, userName) => {
                     },
                     onWindowMinimized: () => {
                         console.log('[Demo]CallInvitation onWindowMinimized');
-                        Navigation.navigate('Test');
+                        props.navigation.navigate('Test2');
                     },
                     onWindowMaximized: () => {
                         console.log('[Demo]CallInvitation onWindowMaximized');
-
-                        Navigation.navigate(
+                        props.navigation.navigate(
                             'ZegoUIKitPrebuiltCallInCallScreen',
                         );
                     },
@@ -181,8 +168,4 @@ export const onUserLogin = async (userID, userName) => {
             });
         }
     });
-};
-
-export const onUserLogout = async () => {
-    return ZegoUIKitPrebuiltCallService.uninit();
 };
