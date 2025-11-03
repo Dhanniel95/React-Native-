@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     ZegoUIKitPrebuiltCallWaitingScreen,
     ZegoUIKitPrebuiltCallInCallScreen,
@@ -13,9 +13,14 @@ import Terms from '../../screens/App/Shared/Terms';
 import Policy from '../../screens/App/Shared/Policy';
 import ChangePassword from '../../screens/App/Shared/ChangePassword';
 import Discount from '../../screens/App/Shared/Discount';
-import { useAppSelector } from '../../utils/hooks';
+import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { useNavigation } from '@react-navigation/native';
 import UpdateFace from '../../screens/App/User/UpdateFace';
+import Reel from '../../screens/App/User/Reel';
+import { listNotifications } from '../../redux/basic/basicSlice';
+import BookingList from '../../screens/App/Pro/BookingList';
+import ActivityBooks from '../../screens/App/Pro/ActivityBooks';
+import { saveToken } from '../../utils/notification';
 
 export type AppStackParamList = {
     AppTabs: undefined;
@@ -29,11 +34,16 @@ export type AppStackParamList = {
     Discount: undefined;
     ChangePassword: undefined | { change: boolean };
     UpdateFace: undefined;
+    Reel: { startFrom: number };
+    BookingList: { date: any };
+    ActivityBooks: { itemId: number };
 };
 
 const Stack = createStackNavigator<AppStackParamList>();
 
 const AppStack = () => {
+    const dispatch = useAppDispatch();
+
     const navigation = useNavigation<any>();
 
     const { user } = useAppSelector(state => state.auth);
@@ -42,6 +52,11 @@ const AppStack = () => {
         if (user?.role === 'user' && !user.faceIdPhotoUrl) {
             navigation.navigate('UpdateFace');
         }
+    }, []);
+
+    useEffect(() => {
+        saveToken();
+        dispatch(listNotifications());
     }, []);
 
     return (
@@ -72,6 +87,9 @@ const AppStack = () => {
                 />
                 <Stack.Screen name="Discount" component={Discount} />
                 <Stack.Screen name="UpdateFace" component={UpdateFace} />
+                <Stack.Screen name="Reel" component={Reel} />
+                <Stack.Screen name="BookingList" component={BookingList} />
+                <Stack.Screen name="ActivityBooks" component={ActivityBooks} />
             </Stack.Navigator>
             <ZegoUIKitPrebuiltCallFloatingMinimizedView />
         </>

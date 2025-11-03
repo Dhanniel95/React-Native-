@@ -10,6 +10,7 @@ import { displayError } from '../../../utils/display';
 import textStyles from '../../../styles/textStyles';
 import ButtonSettings from '../../../components/Basics/ButtonSettings';
 import { onboardAcc } from '../../../redux/basic/basicSlice';
+import ZegoUIKitPrebuiltCallService from '@zegocloud/zego-uikit-prebuilt-call-rn';
 
 const Settings = () => {
     const { user } = useAppSelector(state => state.auth);
@@ -23,6 +24,8 @@ const Settings = () => {
         dispatch(saveChatId(''));
         dispatch(logOut());
         await AsyncStorage.removeItem('@accesstoken');
+        await AsyncStorage.removeItem('@pushToken');
+        ZegoUIKitPrebuiltCallService.uninit();
     };
 
     const deactivateHandler = async () => {

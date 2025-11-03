@@ -21,6 +21,7 @@ import formStyles from '../../styles/formStyles';
 import colors from '../../utils/colors';
 import FloatInput from '../../components/Basics/FloatInput';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { onUserLogin } from '../../utils/zego';
 
 const Login = () => {
     const dispatch = useAppDispatch();
@@ -37,18 +38,18 @@ const Login = () => {
 
     const submitHandler = async () => {
         if (phone && pass) {
-            dispatch(loginUser({ phone: phone.trim(), password: pass.trim() }));
-            // registerForPushNotificationsAsync();
+            let res = await dispatch(
+                loginUser({ phone: phone.trim(), password: pass.trim() }),
+            ).unwrap();
+            loadStream(res);
         }
     };
 
-    // const loadStream = async (user: any) => {
-    // 	await initStreamClient({
-    // 		id: `${user.userId}`,
-    // 		image: user.faceIdPhotoUrl,
-    // 		name: user.name,
-    // 	});
-    // };
+    const loadStream = async (user: any) => {
+        if (user.userId) {
+            await onUserLogin(`${user.userId}`, user.name);
+        }
+    };
 
     const registerGuest = async () => {
         try {

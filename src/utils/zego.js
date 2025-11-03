@@ -7,10 +7,11 @@ import ZegoUIKitPrebuiltCallService, {
     ZegoInvitationType,
     ZegoMenuBarButtonName,
 } from '@zegocloud/zego-uikit-prebuilt-call-rn';
+import * as Navigation from '../utils/navigation';
 
 const notificationStyle = 'CustomView';
 
-export const onUserLogin = async (userID, userName, props) => {
+export const onUserLogin = async (userID, userName) => {
     return ZegoUIKitPrebuiltCallService.init(
         1499669791,
         'fef5cd5708bd1f97d3d8c885079eb7c167e25cf0efd5706175f80a9e86416ecb',
@@ -125,7 +126,8 @@ export const onUserLogin = async (userID, userName, props) => {
                             reason,
                             duration,
                         );
-                        props.navigation.navigate('Test2');
+                        ZegoUIKitPrebuiltCallService.hangUp();
+                        Navigation.navigate('AppTabs');
                     },
                     timingConfig: {
                         isDurationVisible: true,
@@ -147,11 +149,11 @@ export const onUserLogin = async (userID, userName, props) => {
                     },
                     onWindowMinimized: () => {
                         console.log('[Demo]CallInvitation onWindowMinimized');
-                        props.navigation.navigate('Test2');
+                        Navigation.navigate('AppTabs');
                     },
                     onWindowMaximized: () => {
                         console.log('[Demo]CallInvitation onWindowMaximized');
-                        props.navigation.navigate(
+                        Navigation.navigate(
                             'ZegoUIKitPrebuiltCallInCallScreen',
                         );
                     },

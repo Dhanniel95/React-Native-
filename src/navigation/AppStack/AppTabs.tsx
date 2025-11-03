@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import Layout from '../../components/Layout';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -10,14 +10,26 @@ import ConsultantProfile from '../../screens/App/Consultant/ConsultantProfile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { connectSocket, disconnectSocket } from '../../utils/socket';
 import baseUrl from '../../utils/config';
-import { getUserInfo } from '../../redux/auth/authSlice';
+import { getUserInfo, logOut, saveUserData } from '../../redux/auth/authSlice';
 import Gallery from '../../screens/App/User/Gallery';
 import Consult from '../../screens/App/User/Consult';
+import UserProfile from '../../screens/App/User/UserProfile';
+import ProHome from '../../screens/App/Pro/ProHome';
+import ProProfile from '../../screens/App/Pro/ProProfile';
+import ProChats from '../../screens/App/Pro/ProChats';
+import { Alert, TouchableOpacity } from 'react-native';
+import Exit from '../../screens/App/User/Exit';
+import { saveChatId } from '../../redux/chat/chatSlice';
+import { onUserLogin } from '../../utils/zego';
+import ModalComponent from '../../components/ModalComponent';
+import GuestToUser from '../../components/User/GuestToUser';
 
 const Tab = createBottomTabNavigator();
 
 const AppTabs = () => {
     const dispatch = useAppDispatch();
+
+    const [openUser, setOpenUser] = useState(false);
 
     const { user } = useAppSelector(state => state.auth);
 
@@ -39,7 +51,10 @@ const AppTabs = () => {
     }, []);
 
     useEffect(() => {
-        dispatch(getUserInfo());
+        if (user.role !== 'guest') {
+            dispatch(getUserInfo());
+            onUserLogin(`${user.userId}`, user.name);
+        }
     }, []);
 
     const connectToSocket = async () => {
@@ -59,9 +74,27 @@ const AppTabs = () => {
             console.log('Error With Connection', err);
         });
 
-        socket.onAny((event, ...args) => {
-            console.log('Got event:', event, args);
+        socket.on('auth:new-token', async data => {
+            if (data?.data?.token) {
+                await AsyncStorage.setItem('@accesstoken', data.data.token);
+                dispatch(
+                    saveUserData({
+                        ...data.data.user,
+                        changePassword: data.data?.changePassword,
+                    }),
+                );
+                setOpenUser(true);
+            }
         });
+
+        // socket.onAny((event, ...args) => {
+        //     console.log('Got event:', event, args);
+        // });
+    };
+
+    const logoutHandler = () => {
+        dispatch(saveChatId(''));
+        dispatch(logOut());
     };
 
     return (
@@ -89,7 +122,7 @@ const AppTabs = () => {
                 }}
                 safeAreaInsets={{ bottom: 0, top: 0 }}
             >
-                {user.role === 'consultant' ? (
+                {user.role === 'consultant' && (
                     <>
                         <Tab.Screen
                             name="Consult"
@@ -105,9 +138,72 @@ const AppTabs = () => {
                                 ),
                             }}
                         />
+                    </>
+                )}
+                {user.role === 'user' ||
+                    (user.role === 'guest' && (
+                        <>
+                            <Tab.Screen
+                                name="Gallery"
+                                component={Gallery}
+                                options={{
+                                    tabBarIcon: ({ color }) => (
+                                        <Icon
+                                            type="feather"
+                                            color={color}
+                                            size={20}
+                                            name={'image'}
+                                        />
+                                    ),
+                                }}
+                            />
+                            <Tab.Screen
+                                name="Consult"
+                                component={Consult}
+                                options={{
+                                    tabBarIcon: ({ color }) => (
+                                        <Icon
+                                            type="feather"
+                                            color={color}
+                                            size={20}
+                                            name={'message-square'}
+                                        />
+                                    ),
+                                    tabBarStyle: {
+                                        display: 'none',
+                                    },
+                                }}
+                            />
+                        </>
+                    ))}
+                {user.role === 'pro' && (
+                    <Tab.Screen
+                        name="Home"
+                        component={ProHome}
+                        options={{
+                            tabBarIcon: ({ color }) => (
+                                <Icon
+                                    type="feather"
+                                    color={color}
+                                    size={20}
+                                    name={'home'}
+                                />
+                            ),
+                        }}
+                    />
+                )}
+
+                {user.role !== 'guest' && (
+                    <>
                         <Tab.Screen
                             name="Profile"
-                            component={ConsultantProfile}
+                            component={
+                                user.role === 'consultant'
+                                    ? ConsultantProfile
+                                    : user.role === 'pro'
+                                    ? ProProfile
+                                    : UserProfile
+                            }
                             options={{
                                 tabBarIcon: ({ color }) => (
                                     <Icon
@@ -119,74 +215,82 @@ const AppTabs = () => {
                                 ),
                             }}
                         />
-                    </>
-                ) : user.role === 'user' || user.role === 'guest' ? (
-                    <>
+                        {user.role === 'pro' && (
+                            <Tab.Screen
+                                name="Chats"
+                                component={ProChats}
+                                options={{
+                                    tabBarIcon: ({ color }) => (
+                                        <Icon
+                                            type="feather"
+                                            color={color}
+                                            size={20}
+                                            name={'message-square'}
+                                        />
+                                    ),
+                                }}
+                            />
+                        )}
                         <Tab.Screen
-                            name="Gallery"
-                            component={Gallery}
+                            name="Settings"
+                            component={Settings}
                             options={{
                                 tabBarIcon: ({ color }) => (
                                     <Icon
                                         type="feather"
                                         color={color}
-                                        size={20}
-                                        name={'image'}
+                                        size={22}
+                                        name={'settings'}
                                     />
                                 ),
-                            }}
-                        />
-                        <Tab.Screen
-                            name="Consult"
-                            component={Consult}
-                            options={{
-                                tabBarIcon: ({ color }) => (
-                                    <Icon
-                                        type="feather"
-                                        color={color}
-                                        size={20}
-                                        name={'message-square'}
-                                    />
-                                ),
-                                tabBarStyle: {
-                                    display: 'none',
-                                },
                             }}
                         />
                     </>
-                ) : (
-                    <Tab.Screen
-                        name="Home"
-                        component={ChatRooms}
-                        options={{
-                            tabBarIcon: ({ color }) => (
-                                <Icon
-                                    type="feather"
-                                    color={color}
-                                    size={22}
-                                    name={'message-square'}
-                                />
-                            ),
-                        }}
-                    />
                 )}
-                {user.role !== 'guest' && (
+                {user.role === 'guest' && (
                     <Tab.Screen
-                        name="Settings"
-                        component={Settings}
+                        name="Log In"
+                        component={Exit}
                         options={{
                             tabBarIcon: ({ color }) => (
                                 <Icon
                                     type="feather"
                                     color={color}
                                     size={22}
-                                    name={'settings'}
+                                    name={'log-in'}
                                 />
                             ),
+                            tabBarButton: props => {
+                                return (
+                                    <TouchableOpacity
+                                        {...props}
+                                        onPress={() => {
+                                            Alert.alert(
+                                                'Log In',
+                                                'Log In to Hairsap to access more',
+                                                [
+                                                    {
+                                                        text: 'Cancel',
+                                                        style: 'cancel',
+                                                    },
+                                                    {
+                                                        text: 'Login',
+                                                        onPress: () =>
+                                                            logoutHandler(),
+                                                    },
+                                                ],
+                                            );
+                                        }}
+                                    />
+                                );
+                            },
                         }}
                     />
                 )}
             </Tab.Navigator>
+            <ModalComponent open={openUser} closeModal={() => console.log('')}>
+                <GuestToUser closeModal={() => setOpenUser(false)} />
+            </ModalComponent>
         </Layout>
     );
 };

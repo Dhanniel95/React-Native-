@@ -1,6 +1,6 @@
 import React from 'react';
 import { ZegoSendCallInvitationButton } from '@zegocloud/zego-uikit-prebuilt-call-rn';
-import { ZegoToastType } from '@zegocloud/zego-uikit-rn';
+import { Alert } from 'react-native';
 
 const ChatCall = ({
     userId,
@@ -23,10 +23,14 @@ const ChatCall = ({
                 if (errorCode == 0) {
                     // Successful
                 } else {
-                    console.log({
-                        type: ZegoToastType.error,
-                        text: `error: ${errorCode}\n\n${errorMessage}`,
-                    });
+                    if (errorCode === 6000281) {
+                        Alert.alert(
+                            'Error',
+                            'Unable to reach user. Try again later.',
+                        );
+                    } else {
+                        Alert.alert('Error', errorMessage.toString());
+                    }
                 }
             }}
         />

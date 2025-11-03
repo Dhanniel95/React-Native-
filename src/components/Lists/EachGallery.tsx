@@ -16,7 +16,7 @@ const EachGallery = ({
 
     const reelHandler = () => {
         navigation.navigate('Reel', {
-            params: { startFrom: item.galleryId },
+            startFrom: item.galleryId,
         });
     };
 

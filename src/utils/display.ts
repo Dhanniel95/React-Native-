@@ -1,4 +1,4 @@
-import { toast } from 'sonner-native';
+import { showMessage } from 'react-native-flash-message';
 
 const displayError = (error: any, display: boolean) => {
     let status = error?.response?.status;
@@ -20,26 +20,23 @@ const displayError = (error: any, display: boolean) => {
     }
 
     if (display) {
-        // toast.error('Error', {
-        //     description: message,
-        //     dismissible: true,
-        //     style: { backgroundColor: '#8B0000' },
-        //     cancelButtonTextStyle: { color: '#FFF' },
-        //     styles: {
-        //         title: {
-        //             color: '#FFF',
-        //         },
-        //         description: {
-        //             color: '#FFF',
-        //         },
-        //     },
-        // });
+        showMessage({
+            duration: 3000,
+            message: 'Oops!',
+            description: message,
+            type: 'danger',
+        });
     }
     return message;
 };
 
-const displaySuccess = (title?: string, message?: string) => {
-    //toast.success(title || 'Success', { description: message });
+const displaySuccess = (message: string, title?: string) => {
+    showMessage({
+        duration: 3000,
+        message: title || 'Great!',
+        description: message,
+        type: 'success',
+    });
 };
 
 export { displayError, displaySuccess };

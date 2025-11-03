@@ -6,6 +6,8 @@ import {
     getMessaging,
     getAPNSToken,
 } from '@react-native-firebase/messaging';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import authService from '../redux/auth/authService';
 
 const requestingPermission = async () => {
     let authStatus = await requestPermission(getMessaging());
@@ -41,4 +43,17 @@ const getFcmToken = async () => {
     }
 };
 
-export { getFcmToken, requestingPermission };
+const saveToken = async () => {
+    let token = await getFcmToken();
+    if (token) {
+        let find = await AsyncStorage.getItem('@pushToken');
+        if (!find) {
+            try {
+                await authService.saveToken(token);
+                await AsyncStorage.setItem('@pushToken', 'saved');
+            } catch (err) {}
+        }
+    }
+};
+
+export { getFcmToken, requestingPermission, saveToken };

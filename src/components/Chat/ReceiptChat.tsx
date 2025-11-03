@@ -29,7 +29,7 @@ const ReceiptChat = ({
         if (metadata.bookingId) {
             if (user.role === 'pro') {
                 navigation.navigate('ActivityBooks', {
-                    params: { itemId: metadata.bookingId },
+                    itemId: metadata.bookingId,
                 });
             } else if (user.role === 'consultant') {
                 setOpenModal(true);

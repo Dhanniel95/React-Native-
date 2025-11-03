@@ -40,7 +40,6 @@ const ChatRooms = () => {
     const [refreshing, setRefreshing] = useState(false);
     const [openModal, setOpenModal] = useState(false);
     const [search, setSearch] = useState('');
-    const [searchList, setSearchList] = useState<any>([]);
 
     const debouncedSearch = useDebounce(search);
 

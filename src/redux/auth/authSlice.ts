@@ -81,6 +81,7 @@ export const authSlice = createSlice({
         logOut: state => {
             state.loading = false;
             state.user = {};
+            AsyncStorage.removeItem('@pushToken');
         },
         resetLoad: state => {
             state.loading = false;
