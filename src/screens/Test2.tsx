@@ -64,7 +64,7 @@ const Test2 = (props: any) => {
                 onUserLogin(info.userID, info.userName, props);
             } else {
                 // Back to the login screen if not login before
-                props.navigation.navigate('LoginScreen');
+                props.navigation.navigate('Test');
             }
         });
     }, []);
@@ -143,7 +143,7 @@ const Test2 = (props: any) => {
                     <Button
                         title="Back To Login Screen"
                         onPress={() => {
-                            props.navigation.navigate('LoginScreen');
+                            props.navigation.navigate('Test');
                             ZegoUIKitPrebuiltCallService.uninit();
                         }}
                     ></Button>

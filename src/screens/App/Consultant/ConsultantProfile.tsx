@@ -1,0 +1,338 @@
+import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import textStyles from '../../../styles/textStyles';
+import { useAppSelector } from '../../../utils/hooks';
+import consultantService from '../../../redux/consultant/consultantService';
+import Icon from '../../../components/Icon';
+import colors from '../../../utils/colors';
+import { formatCommas } from '../../../utils/currency';
+import SkeletonLoad from '../../../components/SkeletonLoad';
+
+const ConsultantProfile = () => {
+    const { user } = useAppSelector(state => state.auth);
+
+    const [load, setLoad] = useState(false);
+    const [profile, setProfile] = useState<any>({});
+
+    useEffect(() => {
+        getProfile();
+    }, []);
+
+    const getProfile = async () => {
+        try {
+            setLoad(true);
+            let res = await consultantService.profileDetails(user.userId);
+            setProfile(res?.data);
+            setLoad(false);
+        } catch (err) {
+            setLoad(false);
+        }
+    };
+
+    return (
+        <View style={{ flex: 1, backgroundColor: '#FFF' }}>
+            <Text
+                style={[
+                    textStyles.textBold,
+                    { textAlign: 'center', paddingVertical: 10, fontSize: 17 },
+                ]}
+            >
+                Profile
+            </Text>
+            <View style={{ flex: 1, paddingHorizontal: 30 }}>
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{ paddingBottom: 30 }}
+                >
+                    <View style={{ flex: 1 }}>
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <Image
+                                source={
+                                    user.faceIdPhotoUrl
+                                        ? { uri: user.faceIdPhotoUrl }
+                                        : require('../../../assets/images/profile.png')
+                                }
+                                style={styles.img}
+                            />
+                            <View style={{ marginLeft: 15 }}>
+                                <Text style={[textStyles.textBold]}>
+                                    {user.name}
+                                </Text>
+                                <Text style={[textStyles.text]}>
+                                    {user.email}
+                                </Text>
+                            </View>
+                        </View>
+                        {load ? (
+                            <View style={{ marginTop: 30 }}>
+                                <SkeletonLoad count={6} />
+                            </View>
+                        ) : (
+                            profile?.salesPerformance && (
+                                <>
+                                    <View style={{ marginTop: 30 }}>
+                                        <Text
+                                            style={[
+                                                textStyles.textBold,
+                                                {
+                                                    color: colors.mediumGray,
+                                                    fontSize: 14,
+                                                },
+                                            ]}
+                                        >
+                                            Key Performance Summary
+                                        </Text>
+                                        <View
+                                            style={{
+                                                flexDirection: 'row',
+                                                alignItems: 'center',
+                                                justifyContent: 'space-between',
+                                                marginVertical: 20,
+                                            }}
+                                        >
+                                            <View
+                                                style={{
+                                                    width: '32%',
+                                                    alignItems: 'center',
+                                                }}
+                                            >
+                                                <Icon
+                                                    type="entypo"
+                                                    name="bar-graph"
+                                                    color={colors.primary}
+                                                    size={25}
+                                                />
+                                                <Text
+                                                    style={[
+                                                        textStyles.textBold,
+                                                        {
+                                                            marginTop: 10,
+                                                            fontSize: 16,
+                                                        },
+                                                    ]}
+                                                >
+                                                    ₦
+                                                    {formatCommas(
+                                                        profile.completedBookingAmount /
+                                                            100,
+                                                    )}
+                                                </Text>
+                                                <Text
+                                                    style={[
+                                                        textStyles.textMid,
+                                                        {
+                                                            color: colors.mediumGray,
+                                                            fontSize: 14,
+                                                        },
+                                                    ]}
+                                                >
+                                                    Monthly Sales
+                                                </Text>
+                                            </View>
+                                            <View
+                                                style={{
+                                                    width: '32%',
+                                                    alignItems: 'center',
+                                                }}
+                                            >
+                                                <Icon
+                                                    type="antdesign"
+                                                    name="calendar"
+                                                    size={25}
+                                                    color={colors.primary}
+                                                />
+                                                <Text
+                                                    style={[
+                                                        textStyles.textBold,
+                                                        {
+                                                            marginTop: 10,
+                                                            fontSize: 16,
+                                                        },
+                                                    ]}
+                                                >
+                                                    {profile.bookingsCount}
+                                                </Text>
+                                                <Text
+                                                    style={[
+                                                        textStyles.textMid,
+                                                        {
+                                                            color: colors.mediumGray,
+                                                            fontSize: 14,
+                                                        },
+                                                    ]}
+                                                >
+                                                    Bookings
+                                                </Text>
+                                            </View>
+                                            <View
+                                                style={{
+                                                    width: '32%',
+                                                    alignItems: 'center',
+                                                }}
+                                            >
+                                                <Icon
+                                                    type="entypo"
+                                                    name="bar-graph"
+                                                    color={'lightgreen'}
+                                                    size={25}
+                                                />
+                                                <Text
+                                                    style={[
+                                                        textStyles.textBold,
+                                                        {
+                                                            marginTop: 10,
+                                                            fontSize: 16,
+                                                        },
+                                                    ]}
+                                                >
+                                                    {profile.salesPerformance
+                                                        .actualThisMonth /
+                                                        profile.salesPerformance
+                                                            .targetAmount}
+                                                    %
+                                                </Text>
+                                                <Text
+                                                    style={[
+                                                        textStyles.textMid,
+                                                        {
+                                                            color: colors.mediumGray,
+                                                            fontSize: 14,
+                                                        },
+                                                    ]}
+                                                >
+                                                    Achievement
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    </View>
+                                    <Text
+                                        style={[
+                                            textStyles.textBold,
+                                            {
+                                                color: colors.mediumGray,
+                                                fontSize: 14,
+                                            },
+                                        ]}
+                                    >
+                                        Sales Target
+                                    </Text>
+                                    <View style={{ alignItems: 'center' }}>
+                                        <View style={styles.round}>
+                                            <Text
+                                                style={[
+                                                    textStyles.textBold,
+                                                    { fontSize: 18 },
+                                                ]}
+                                            >
+                                                {profile.salesPerformance
+                                                    .actualThisMonth /
+                                                    profile.salesPerformance
+                                                        .targetAmount}
+                                                %
+                                            </Text>
+                                            <Text
+                                                style={[
+                                                    textStyles.text,
+                                                    { fontSize: 13 },
+                                                ]}
+                                            >
+                                                of target
+                                            </Text>
+                                        </View>
+                                    </View>
+                                    <View
+                                        style={{
+                                            flexDirection: 'row',
+                                            alignItems: 'center',
+                                            justifyContent: 'space-between',
+                                            marginTop: 20,
+                                        }}
+                                    >
+                                        <View style={{ alignItems: 'center' }}>
+                                            <Text
+                                                style={[
+                                                    textStyles.textMid,
+                                                    {
+                                                        fontSize: 16,
+                                                        color: colors.mediumGray,
+                                                    },
+                                                ]}
+                                            >
+                                                Current
+                                            </Text>
+                                            <Text
+                                                style={[
+                                                    textStyles.textBold,
+                                                    {
+                                                        fontSize: 16,
+                                                    },
+                                                ]}
+                                            >
+                                                ₦
+                                                {formatCommas(
+                                                    profile.salesPerformance
+                                                        ?.actualThisMonth / 100,
+                                                )}
+                                            </Text>
+                                        </View>
+                                        <View style={{ alignItems: 'center' }}>
+                                            <Text
+                                                style={[
+                                                    textStyles.textMid,
+                                                    {
+                                                        fontSize: 16,
+                                                        color: colors.mediumGray,
+                                                    },
+                                                ]}
+                                            >
+                                                Target
+                                            </Text>
+                                            <Text
+                                                style={[
+                                                    textStyles.textBold,
+                                                    {
+                                                        fontSize: 16,
+                                                    },
+                                                ]}
+                                            >
+                                                ₦
+                                                {formatCommas(
+                                                    profile.salesPerformance
+                                                        ?.targetAmount / 100,
+                                                )}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                </>
+                            )
+                        )}
+                    </View>
+                </ScrollView>
+            </View>
+        </View>
+    );
+};
+
+export default ConsultantProfile;
+
+const styles = StyleSheet.create({
+    img: {
+        height: 80,
+        width: 80,
+        borderRadius: 40,
+    },
+    round: {
+        height: 180,
+        width: 180,
+        borderRadius: 90,
+        borderWidth: 5,
+        borderColor: colors.appGray,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});

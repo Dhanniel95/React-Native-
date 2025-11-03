@@ -1,43 +1,20 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
-import Test from '../screens/Test';
-import {
-    ZegoCallInvitationDialog,
-    ZegoUIKitPrebuiltCallWaitingScreen,
-    ZegoUIKitPrebuiltCallInCallScreen,
-    ZegoUIKitPrebuiltCallFloatingMinimizedView,
-} from '@zegocloud/zego-uikit-prebuilt-call-rn';
-import Test2 from '../screens/Test2';
-
-const Stack = createStackNavigator();
+import React, { useEffect } from 'react';
+import BootSplash from 'react-native-bootsplash';
+import { useAppSelector } from '../utils/hooks';
+import AppStack from './AppStack';
+import AuthStack from './AuthStack';
 
 const RootNav = () => {
-    return (
-        <>
-            <Stack.Navigator
-                screenOptions={{
-                    headerShown: false,
-                    presentation: 'card',
-                }}
-                initialRouteName="Test2"
-            >
-                <Stack.Screen name="Test" component={Test} />
-                <Stack.Screen name="Test2" component={Test2} />
-                <Stack.Screen
-                    name="ZegoUIKitPrebuiltCallWaitingScreen"
-                    component={ZegoUIKitPrebuiltCallWaitingScreen}
-                />
-                <Stack.Screen
-                    name="ZegoUIKitPrebuiltCallInCallScreen"
-                    component={ZegoUIKitPrebuiltCallInCallScreen}
-                />
-            </Stack.Navigator>
-            <ZegoUIKitPrebuiltCallFloatingMinimizedView />
-        </>
-    );
+    useEffect(() => {
+        const init = async () => {};
+        init().finally(async () => {
+            await BootSplash.hide({ fade: true });
+        });
+    }, []);
+
+    const { user } = useAppSelector(state => state.auth);
+
+    return user?.userId ? <AppStack /> : <AuthStack />;
 };
 
 export default RootNav;
-
-const styles = StyleSheet.create({});
