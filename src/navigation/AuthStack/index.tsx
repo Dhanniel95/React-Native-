@@ -7,6 +7,7 @@ import { useAppSelector } from '../../utils/hooks';
 import Terms from '../../screens/App/Shared/Terms';
 import Policy from '../../screens/App/Shared/Policy';
 import ForgotPassword from '../../screens/Auth/ForgotPassword';
+import MagicLogin from '../../screens/Auth/MagicLogin';
 
 export type AuthStackParamList = {
     AutoGuest: undefined;
@@ -15,6 +16,7 @@ export type AuthStackParamList = {
     ForgotPassword: undefined;
     Terms: undefined;
     Policy: undefined;
+    MagicLogin: { 'magic-token': string };
 };
 
 const Stack = createStackNavigator<AuthStackParamList>();
@@ -36,6 +38,7 @@ const AuthStack = () => {
             <Stack.Screen name="Terms" component={Terms} />
             <Stack.Screen name="Policy" component={Policy} />
             <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+            <Stack.Screen name="MagicLogin" component={MagicLogin} />
         </Stack.Navigator>
     );
 };

@@ -53,7 +53,7 @@ const AppTabs = () => {
     useEffect(() => {
         if (user.role !== 'guest') {
             dispatch(getUserInfo());
-            onUserLogin(`${user.userId}`, user.name);
+            onUserLogin(`${user.userId}`, user.name, user.faceIdPhotoUrl);
         }
     }, []);
 
@@ -140,42 +140,41 @@ const AppTabs = () => {
                         />
                     </>
                 )}
-                {user.role === 'user' ||
-                    (user.role === 'guest' && (
-                        <>
-                            <Tab.Screen
-                                name="Gallery"
-                                component={Gallery}
-                                options={{
-                                    tabBarIcon: ({ color }) => (
-                                        <Icon
-                                            type="feather"
-                                            color={color}
-                                            size={20}
-                                            name={'image'}
-                                        />
-                                    ),
-                                }}
-                            />
-                            <Tab.Screen
-                                name="Consult"
-                                component={Consult}
-                                options={{
-                                    tabBarIcon: ({ color }) => (
-                                        <Icon
-                                            type="feather"
-                                            color={color}
-                                            size={20}
-                                            name={'message-square'}
-                                        />
-                                    ),
-                                    tabBarStyle: {
-                                        display: 'none',
-                                    },
-                                }}
-                            />
-                        </>
-                    ))}
+                {(user.role === 'user' || user.role === 'guest') && (
+                    <>
+                        <Tab.Screen
+                            name="Gallery"
+                            component={Gallery}
+                            options={{
+                                tabBarIcon: ({ color }) => (
+                                    <Icon
+                                        type="feather"
+                                        color={color}
+                                        size={20}
+                                        name={'image'}
+                                    />
+                                ),
+                            }}
+                        />
+                        <Tab.Screen
+                            name="Consult"
+                            component={Consult}
+                            options={{
+                                tabBarIcon: ({ color }) => (
+                                    <Icon
+                                        type="feather"
+                                        color={color}
+                                        size={20}
+                                        name={'message-square'}
+                                    />
+                                ),
+                                tabBarStyle: {
+                                    display: 'none',
+                                },
+                            }}
+                        />
+                    </>
+                )}
                 {user.role === 'pro' && (
                     <Tab.Screen
                         name="Home"

@@ -47,7 +47,7 @@ const Login = () => {
 
     const loadStream = async (user: any) => {
         if (user.userId) {
-            await onUserLogin(`${user.userId}`, user.name);
+            await onUserLogin(`${user.userId}`, user.name, user.faceIdPhotoUrl);
         }
     };
 

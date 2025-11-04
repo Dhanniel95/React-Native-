@@ -41,6 +41,10 @@
 		<string>We need to use the microphone</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>Hairsap would like to select a photo from your gallery as your profile picture on the app</string>
+		<key>NSUserActivityTypes</key>
+		<array>
+			<string>NSUserActivityTypeBrowsingWeb</string>
+		</array>
 		<key>RCTNewArchEnabled</key>
 		<true/>
 		<key>UIBackgroundModes</key>

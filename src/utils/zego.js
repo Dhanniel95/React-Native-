@@ -11,7 +11,7 @@ import * as Navigation from '../utils/navigation';
 
 const notificationStyle = 'CustomView';
 
-export const onUserLogin = async (userID, userName) => {
+export const onUserLogin = async (userID, userName, profileImage) => {
     return ZegoUIKitPrebuiltCallService.init(
         1499669791,
         'fef5cd5708bd1f97d3d8c885079eb7c167e25cf0efd5706175f80a9e86416ecb',
@@ -24,16 +24,18 @@ export const onUserLogin = async (userID, userName) => {
                 outgoingCallFileName: 'zego_outgoing.mp3',
             },
             avatarBuilder: ({ userInfo }) => {
-                return (
+                return profileImage ? (
                     <View style={{ width: '100%', height: '100%' }}>
                         <Image
                             style={{ width: '100%', height: '100%' }}
                             resizeMode="cover"
                             source={{
-                                uri: `https://robohash.org/${userInfo.userID}.png`,
+                                uri: profileImage,
                             }}
                         />
                     </View>
+                ) : (
+                    <></>
                 );
             },
             waitingPageConfig: {},
@@ -119,23 +121,25 @@ export const onUserLogin = async (userID, userName) => {
                                 ? ZegoLayoutMode.gallery
                                 : ZegoLayoutMode.pictureInPicture,
                     },
-                    onCallEnd: (callID, reason, duration) => {
+                    onCallEnd: async (callID, reason, duration) => {
                         console.log(
                             '########CallWithInvitation onCallEnd',
                             callID,
                             reason,
                             duration,
                         );
-                        ZegoUIKitPrebuiltCallService.hangUp();
+                        await ZegoUIKitPrebuiltCallService.hangUp();
                         Navigation.navigate('AppTabs');
+                        await onUserLogout();
+                        onUserLogin(userID, userName, profileImage);
                     },
                     timingConfig: {
                         isDurationVisible: true,
                         onDurationUpdate: duration => {
-                            console.log(
-                                '########CallWithInvitation onDurationUpdate',
-                                duration,
-                            );
+                            // console.log(
+                            //     '########CallWithInvitation onDurationUpdate',
+                            //     duration,
+                            // );
                             if (duration === 10 * 60) {
                                 ZegoUIKitPrebuiltCallService.hangUp();
                             }
@@ -170,4 +174,8 @@ export const onUserLogin = async (userID, userName) => {
             });
         }
     });
+};
+
+export const onUserLogout = async () => {
+    await ZegoUIKitPrebuiltCallService.uninit();
 };
