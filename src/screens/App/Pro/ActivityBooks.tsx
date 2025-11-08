@@ -23,6 +23,7 @@ import chatService from '../../../redux/chat/chatService';
 import { format } from 'date-fns';
 import { formatCurrency } from '../../../utils/currency';
 import { ZegoSendCallInvitationButton } from '@zegocloud/zego-uikit-prebuilt-call-rn';
+import { formatTime } from '../../../utils/datetime';
 
 const ActivityBooks = () => {
     const route = useRoute<RouteProp<AppStackParamList, 'ActivityBooks'>>();
@@ -88,6 +89,8 @@ const ActivityBooks = () => {
             return false;
         }
     };
+
+    console.log(bookingData);
 
     const chatConsultant = async () => {
         try {
@@ -199,14 +202,25 @@ const ActivityBooks = () => {
                             {isPermitted() ? (
                                 <ZegoSendCallInvitationButton
                                     invitees={[
-                                        {
-                                            userID: `${bookingData?.user?.userId}`,
-                                            userName: bookingData.user?.name,
-                                        },
+                                        user.userId === bookingData?.pro?.userId
+                                            ? {
+                                                  userID: `${bookingData?.user?.userId}`,
+                                                  userName:
+                                                      bookingData.user?.name,
+                                              }
+                                            : {
+                                                  userID: `${bookingData?.pro?.userId}`,
+                                                  userName:
+                                                      bookingData.pro?.name,
+                                              },
                                     ]}
                                     isVideoCall={false}
                                     showWaitingPageWhenGroupCall={true}
-                                    text={'Call Customer'}
+                                    text={
+                                        user.userId === bookingData?.pro?.userId
+                                            ? 'Call Customer'
+                                            : 'Call Head Braider'
+                                    }
                                     width={200}
                                     height={50}
                                     borderRadius={5}
@@ -252,7 +266,10 @@ const ActivityBooks = () => {
                                             },
                                         ]}
                                     >
-                                        Call Customer
+                                        {user.userId ===
+                                        bookingData?.pro?.userId
+                                            ? 'Call Customer'
+                                            : 'Call Head Braider'}
                                     </Text>
                                 </TouchableOpacity>
                             )}
@@ -423,7 +440,15 @@ const ActivityBooks = () => {
                             >
                                 Duration:
                             </Text>
-                            <Text style={[textStyles.textMid]}>--</Text>
+                            <Text style={[textStyles.textMid]}>
+                                {formatTime(
+                                    sub.reduce(
+                                        (a: any, b: any) =>
+                                            a + b.subService.duration,
+                                        0,
+                                    ),
+                                )}
+                            </Text>
                         </View>
                         <View style={styles.line}>
                             <Text
@@ -459,7 +484,7 @@ const ActivityBooks = () => {
                                 <Text style={[textStyles.textMid]}>
                                     {format(
                                         bookingData.pinDate,
-                                        'do MMMM, yyyy',
+                                        'do MMMM, yyyy hh:mm a',
                                     )}
                                 </Text>
                             </View>

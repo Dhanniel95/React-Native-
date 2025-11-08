@@ -14,10 +14,16 @@ export const loginUser = createAsyncThunk(
     async (data: any, thunkAPI) => {
         try {
             let res = await authService.login(data);
-            if (res?.token) {
-                await AsyncStorage.setItem('@accesstoken', res.token);
+            let userInfo = res?.user || res?.consultant || res?.pro;
+            if (userInfo?.deactivated) {
+                displayError(
+                    'Account has been Deactivated. Please Contact Admin',
+                    true,
+                );
+            } else {
+                await AsyncStorage.setItem('@accesstoken', res?.token);
+                return userInfo;
             }
-            return res?.user || res?.consultant || res?.pro;
         } catch (error: any) {
             let message = displayError(error, true);
             return thunkAPI.rejectWithValue(message);
@@ -81,7 +87,6 @@ export const authSlice = createSlice({
         logOut: state => {
             state.loading = false;
             state.user = {};
-            AsyncStorage.removeItem('@pushToken');
         },
         resetLoad: state => {
             state.loading = false;

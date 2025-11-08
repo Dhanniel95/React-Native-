@@ -65,7 +65,7 @@ const ChatHeader = ({ headerInfo }: { headerInfo: any }) => {
                 </View>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                {user.role === 'consultant' &&
+                {user.role !== 'guest' &&
                     headerInfo.receiverId &&
                     headerInfo.user && (
                         <ChatCall

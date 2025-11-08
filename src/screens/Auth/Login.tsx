@@ -41,7 +41,9 @@ const Login = () => {
             let res = await dispatch(
                 loginUser({ phone: phone.trim(), password: pass.trim() }),
             ).unwrap();
-            loadStream(res);
+            if (res?.userId) {
+                loadStream(res);
+            }
         }
     };
 
@@ -62,7 +64,9 @@ const Login = () => {
                 role: 'guest',
             };
             dispatch(loginGuest(payload));
+            setLoad(false);
         } catch (err) {
+            setLoad(false);
             displayError(
                 'An error has occured. Please login or create an account',
                 true,

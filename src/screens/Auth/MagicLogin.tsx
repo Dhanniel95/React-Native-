@@ -15,7 +15,7 @@ const MagicLogin = () => {
 
     const route = useRoute<RouteProp<AuthStackParamList, 'MagicLogin'>>();
 
-    const token = route.params['magic-token'];
+    const token = route.params ? route.params['magic-token'] : '';
 
     useEffect(() => {
         loginWithMagicLink();
@@ -36,6 +36,8 @@ const MagicLogin = () => {
                 displayError(err, true);
                 navigation.navigate('Login');
             }
+        } else {
+            navigation.navigate('Login');
         }
     };
 

@@ -22,16 +22,10 @@ const AutoGuest = () => {
     const setup = async () => {
         const token = await getFcmToken();
         const deviceId = await getUniqueId();
-        if (token && deviceId) {
+        if (deviceId) {
             registerGuest(deviceId, token);
         } else {
             navigation.navigate('Login');
-            console.log(
-                displayError(
-                    'An error has occured. Please Contact Admin.',
-                    false,
-                ),
-            );
         }
     };
 
@@ -43,8 +37,7 @@ const AutoGuest = () => {
                 token: token || undefined,
                 role: 'guest',
             };
-            console.log(payload, 'payload');
-            //dispatch(loginGuest(payload))
+            dispatch(loginGuest(payload));
         } catch (err) {
             navigation.navigate('Login');
             displayError(err, true);

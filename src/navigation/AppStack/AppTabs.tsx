@@ -23,6 +23,7 @@ import { saveChatId } from '../../redux/chat/chatSlice';
 import { onUserLogin } from '../../utils/zego';
 import ModalComponent from '../../components/ModalComponent';
 import GuestToUser from '../../components/User/GuestToUser';
+import { onboardAcc } from '../../redux/basic/basicSlice';
 
 const Tab = createBottomTabNavigator();
 
@@ -94,6 +95,7 @@ const AppTabs = () => {
 
     const logoutHandler = () => {
         dispatch(saveChatId(''));
+        dispatch(onboardAcc());
         dispatch(logOut());
     };
 

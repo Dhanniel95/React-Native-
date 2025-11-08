@@ -7,7 +7,7 @@ import {
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Video from 'react-native-video';
 import Slider from '@react-native-community/slider';
 import Icon from '../Icon';
@@ -68,7 +68,7 @@ const ActivePlayer = ({
             });
             setLoadC(false);
             setPaused(true);
-            navigation.navigate('Consult');
+            navigation.navigate('AppTabs', { screen: 'Consult' });
         } catch (err) {
             setLoadC(false);
         }

@@ -110,10 +110,8 @@ export const onUserLogin = async (userID, userName, profileImage) => {
                 );
                 return {
                     turnOnMicrophoneWhenJoining: true,
-                    turnOnCameraWhenJoining:
-                        callInvitationData.type === ZegoInvitationType.videoCall
-                            ? true
-                            : false,
+                    turnOnCameraWhenJoining: false,
+                    useSpeakerWhenJoining: true,
                     layout: {
                         mode:
                             callInvitationData.invitees &&
@@ -130,6 +128,7 @@ export const onUserLogin = async (userID, userName, profileImage) => {
                         );
                         await ZegoUIKitPrebuiltCallService.hangUp();
                         Navigation.navigate('AppTabs');
+                        Navigation.reset('AppTabs');
                         await onUserLogout();
                         onUserLogin(userID, userName, profileImage);
                     },
@@ -154,6 +153,7 @@ export const onUserLogin = async (userID, userName, profileImage) => {
                     onWindowMinimized: () => {
                         console.log('[Demo]CallInvitation onWindowMinimized');
                         Navigation.navigate('AppTabs');
+                        Navigation.reset('AppTabs');
                     },
                     onWindowMaximized: () => {
                         console.log('[Demo]CallInvitation onWindowMaximized');

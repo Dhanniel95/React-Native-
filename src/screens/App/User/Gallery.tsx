@@ -17,6 +17,7 @@ import Icon from '../../../components/Icon';
 import colors from '../../../utils/colors';
 import EachGallery from '../../../components/Lists/EachGallery';
 import GalleryLoad from '../../../components/GalleryLoad';
+import { getFcmToken } from '../../../utils/notification';
 
 const Gallery = () => {
     const dispatch = useAppDispatch();
@@ -65,6 +66,8 @@ const Gallery = () => {
             setRefreshing(false);
         }, 2000);
     }, []);
+
+    console.log(getFcmToken());
 
     return (
         <View style={{ flex: 1, backgroundColor: '#FFF' }}>

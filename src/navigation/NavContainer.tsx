@@ -9,7 +9,7 @@ import { navigationRef } from '../utils/navigation';
 import { Linking } from 'react-native';
 
 const linking = {
-    prefixes: ['hairsap://', 'https://hairsap.com'],
+    prefixes: ['hairsap://', 'https://www.hairsap.com'],
     config: {
         screens: {
             MagicLogin: 'login',

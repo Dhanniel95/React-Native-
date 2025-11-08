@@ -7,3 +7,12 @@ export function navigate(name) {
         navigationRef.navigate(name);
     }
 }
+
+export function reset(name) {
+    if (navigationRef.isReady()) {
+        navigationRef.reset({
+            index: 0,
+            routes: [{ name }],
+        });
+    }
+}
