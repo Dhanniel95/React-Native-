@@ -38,6 +38,7 @@ const getFcmToken = async () => {
         requestingPermission();
         await getAPNSToken(getMessaging());
         const token = await getToken(getMessaging());
+        console.log(token, 'tokenTT');
         return token;
     } catch (err) {
         return undefined;
@@ -52,6 +53,7 @@ const saveToken = async () => {
             try {
                 await authService.saveToken(token);
                 await AsyncStorage.setItem('@pushToken', 'saved');
+                console.log('SAVED NOTIFI');
             } catch (err) {
                 console.log(displayError(err, false), 'Error Sending');
             }
