@@ -99,7 +99,12 @@ const EachAccepted = ({ booking }: { booking: any }) => {
                     >
                         ₦
                         {formatCurrency(
-                            booking?.invoice?.invoiceFees[0].price / 100,
+                            booking?.invoice?.invoiceFees?.reduce(
+                                (accumulator: any, object: any) => {
+                                    return accumulator + object.price / 100;
+                                },
+                                0,
+                            ),
                         )}
                     </Text>
                 </View>

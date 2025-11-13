@@ -12,168 +12,176 @@ import * as Navigation from '../utils/navigation';
 const notificationStyle = 'CustomView';
 
 export const onUserLogin = async (userID, userName, profileImage) => {
-    return ZegoUIKitPrebuiltCallService.init(
-        1499669791,
-        'fef5cd5708bd1f97d3d8c885079eb7c167e25cf0efd5706175f80a9e86416ecb',
-        userID,
-        userName,
-        [ZIM],
-        {
-            ringtoneConfig: {
-                incomingCallFileName: 'zego_incoming.mp3',
-                outgoingCallFileName: 'zego_outgoing.mp3',
-            },
-            avatarBuilder: ({ userInfo }) => {
-                return profileImage ? (
-                    <View style={{ width: '100%', height: '100%' }}>
-                        <Image
-                            style={{ width: '100%', height: '100%' }}
-                            resizeMode="cover"
-                            source={{
-                                uri: profileImage,
-                            }}
-                        />
-                    </View>
-                ) : (
-                    <></>
-                );
-            },
-            waitingPageConfig: {},
-            requireInviterConfig: {
-                enabled: false,
-                detectSeconds: 5,
-            },
-            showDeclineButton: true,
-            innerText: {},
-            onIncomingCallDeclineButtonPressed: navigation => {
-                console.log('[onIncomingCallDeclineButtonPressed]');
-            },
-            onIncomingCallAcceptButtonPressed: navigation => {
-                console.log('[onIncomingCallAcceptButtonPressed]');
-            },
-            onOutgoingCallCancelButtonPressed: (
-                navigation,
-                callID,
-                invitees,
-                type,
-            ) => {
-                console.log(
-                    '[onOutgoingCallCancelButtonPressed]+++',
+    try {
+        return ZegoUIKitPrebuiltCallService.init(
+            1499669791,
+            'fef5cd5708bd1f97d3d8c885079eb7c167e25cf0efd5706175f80a9e86416ecb',
+            userID,
+            userName,
+            [ZIM],
+            {
+                ringtoneConfig: {
+                    incomingCallFileName: 'zego_incoming.mp3',
+                    outgoingCallFileName: 'zego_outgoing.mp3',
+                },
+                avatarBuilder: ({ userInfo }) => {
+                    return profileImage ? (
+                        <View style={{ width: '100%', height: '100%' }}>
+                            <Image
+                                style={{ width: '100%', height: '100%' }}
+                                resizeMode="cover"
+                                source={{
+                                    uri: profileImage,
+                                }}
+                            />
+                        </View>
+                    ) : (
+                        <></>
+                    );
+                },
+                waitingPageConfig: {},
+                requireInviterConfig: {
+                    enabled: false,
+                    detectSeconds: 5,
+                },
+                showDeclineButton: true,
+                innerText: {},
+                onIncomingCallDeclineButtonPressed: navigation => {
+                    console.log('[onIncomingCallDeclineButtonPressed]');
+                },
+                onIncomingCallAcceptButtonPressed: navigation => {
+                    console.log('[onIncomingCallAcceptButtonPressed]');
+                },
+                onOutgoingCallCancelButtonPressed: (
                     navigation,
                     callID,
                     invitees,
                     type,
-                );
-            },
-            onIncomingCallReceived: (
-                callID,
-                inviter,
-                type,
-                invitees,
-                customData,
-            ) => {
-                console.log(
-                    '[Incoming call]+++',
+                ) => {
+                    console.log(
+                        '[onOutgoingCallCancelButtonPressed]+++',
+                        navigation,
+                        callID,
+                        invitees,
+                        type,
+                    );
+                },
+                onIncomingCallReceived: (
                     callID,
                     inviter,
                     type,
                     invitees,
                     customData,
-                );
-            },
-            onIncomingCallCanceled: (callID, inviter) => {
-                console.log('[onIncomingCallCanceled]+++', callID, inviter);
-            },
-            onIncomingCallTimeout: (callID, inviter) => {
-                console.log('[onIncomingCallTimeout]+++', callID, inviter);
-            },
-            onOutgoingCallAccepted: (callID, invitee) => {
-                console.log('[onOutgoingCallAccepted]+++', callID, invitee);
-            },
-            onOutgoingCallRejectedCauseBusy: (callID, invitee) => {
-                console.log(
-                    '[onOutgoingCallRejectedCauseBusy]+++',
-                    callID,
-                    invitee,
-                );
-            },
-            onOutgoingCallDeclined: (callID, invitee) => {
-                console.log('[onOutgoingCallDeclined]+++', callID, invitee);
-            },
-            onOutgoingCallTimeout: (callID, invitees) => {
-                console.log('[onOutgoingCallTimeout]+++', callID, invitees);
-            },
-            requireConfig: callInvitationData => {
-                console.log(
-                    'requireConfig, callID: ',
-                    callInvitationData.callID,
-                );
-                return {
-                    turnOnMicrophoneWhenJoining: true,
-                    turnOnCameraWhenJoining: false,
-                    useSpeakerWhenJoining: true,
-                    layout: {
-                        mode:
-                            callInvitationData.invitees &&
-                            callInvitationData.invitees.length > 1
-                                ? ZegoLayoutMode.gallery
-                                : ZegoLayoutMode.pictureInPicture,
-                    },
-                    onCallEnd: async (callID, reason, duration) => {
-                        console.log(
-                            '########CallWithInvitation onCallEnd',
-                            callID,
-                            reason,
-                            duration,
-                        );
-                        await ZegoUIKitPrebuiltCallService.hangUp();
-                        Navigation.navigate('AppTabs');
-                        Navigation.reset('AppTabs');
-                        await onUserLogout();
-                        onUserLogin(userID, userName, profileImage);
-                    },
-                    timingConfig: {
-                        isDurationVisible: true,
-                        onDurationUpdate: duration => {
-                            // console.log(
-                            //     '########CallWithInvitation onDurationUpdate',
-                            //     duration,
-                            // );
-                            if (duration === 10 * 60) {
-                                ZegoUIKitPrebuiltCallService.hangUp();
-                            }
+                ) => {
+                    console.log(
+                        '[Incoming call]+++',
+                        callID,
+                        inviter,
+                        type,
+                        invitees,
+                        customData,
+                    );
+                },
+                onIncomingCallCanceled: (callID, inviter) => {
+                    console.log('[onIncomingCallCanceled]+++', callID, inviter);
+                },
+                onIncomingCallTimeout: (callID, inviter) => {
+                    console.log('[onIncomingCallTimeout]+++', callID, inviter);
+                },
+                onOutgoingCallAccepted: (callID, invitee) => {
+                    console.log('[onOutgoingCallAccepted]+++', callID, invitee);
+                },
+                onOutgoingCallRejectedCauseBusy: (callID, invitee) => {
+                    console.log(
+                        '[onOutgoingCallRejectedCauseBusy]+++',
+                        callID,
+                        invitee,
+                    );
+                },
+                onOutgoingCallDeclined: (callID, invitee) => {
+                    console.log('[onOutgoingCallDeclined]+++', callID, invitee);
+                },
+                onOutgoingCallTimeout: (callID, invitees) => {
+                    console.log('[onOutgoingCallTimeout]+++', callID, invitees);
+                },
+                requireConfig: callInvitationData => {
+                    console.log(
+                        'requireConfig, callID: ',
+                        callInvitationData.callID,
+                    );
+                    return {
+                        turnOnMicrophoneWhenJoining: true,
+                        turnOnCameraWhenJoining: false,
+                        useSpeakerWhenJoining: true,
+                        layout: {
+                            mode:
+                                callInvitationData.invitees &&
+                                callInvitationData.invitees.length > 1
+                                    ? ZegoLayoutMode.gallery
+                                    : ZegoLayoutMode.pictureInPicture,
                         },
-                    },
-                    topMenuBarConfig: {
-                        buttons: [
-                            ZegoMenuBarButtonName.minimizingButton,
-                            // ZegoMenuBarButtonName.showMemberListButton
-                        ],
-                    },
-                    onWindowMinimized: () => {
-                        console.log('[Demo]CallInvitation onWindowMinimized');
-                        Navigation.navigate('AppTabs');
-                        Navigation.reset('AppTabs');
-                    },
-                    onWindowMaximized: () => {
-                        console.log('[Demo]CallInvitation onWindowMaximized');
-                        Navigation.navigate(
-                            'ZegoUIKitPrebuiltCallInCallScreen',
-                        );
-                    },
-                };
+                        onCallEnd: async (callID, reason, duration) => {
+                            console.log(
+                                '########CallWithInvitation onCallEnd',
+                                callID,
+                                reason,
+                                duration,
+                            );
+                            // await ZegoUIKitPrebuiltCallService.hangUp();
+                            Navigation.navigate('AppTabs');
+                            Navigation.reset('AppTabs');
+                            // await onUserLogout();
+                            // onUserLogin(userID, userName, profileImage);
+                        },
+                        timingConfig: {
+                            isDurationVisible: true,
+                            onDurationUpdate: duration => {
+                                // console.log(
+                                //     '########CallWithInvitation onDurationUpdate',
+                                //     duration,
+                                // );
+                                if (duration === 10 * 60) {
+                                    ZegoUIKitPrebuiltCallService.hangUp();
+                                }
+                            },
+                        },
+                        topMenuBarConfig: {
+                            buttons: [
+                                ZegoMenuBarButtonName.minimizingButton,
+                                // ZegoMenuBarButtonName.showMemberListButton
+                            ],
+                        },
+                        onWindowMinimized: () => {
+                            console.log(
+                                '[Demo]CallInvitation onWindowMinimized',
+                            );
+                            Navigation.navigate('AppTabs');
+                            Navigation.reset('AppTabs');
+                        },
+                        onWindowMaximized: () => {
+                            console.log(
+                                '[Demo]CallInvitation onWindowMaximized',
+                            );
+                            Navigation.navigate(
+                                'ZegoUIKitPrebuiltCallInCallScreen',
+                            );
+                        },
+                    };
+                },
             },
-        },
-    ).then(() => {
-        if (notificationStyle === 'CallStyle') {
-            ZegoUIKitPrebuiltCallService.requestSystemAlertWindow({
-                message:
-                    'We need your consent for the following permissions in order to use the offline call function properly',
-                allow: 'Allow',
-                deny: 'Deny',
-            });
-        }
-    });
+        ).then(() => {
+            if (notificationStyle === 'CallStyle') {
+                ZegoUIKitPrebuiltCallService.requestSystemAlertWindow({
+                    message:
+                        'We need your consent for the following permissions in order to use the offline call function properly',
+                    allow: 'Allow',
+                    deny: 'Deny',
+                });
+            }
+        });
+    } catch (err) {
+        console.log(err, 'ERRZEGo');
+    }
 };
 
 export const onUserLogout = async () => {

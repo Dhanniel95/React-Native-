@@ -21,6 +21,7 @@ import { listNotifications } from '../../redux/basic/basicSlice';
 import BookingList from '../../screens/App/Pro/BookingList';
 import ActivityBooks from '../../screens/App/Pro/ActivityBooks';
 import { saveToken } from '../../utils/notification';
+import MagicLogin from '../../screens/Auth/MagicLogin';
 
 export type AppStackParamList = {
     AppTabs: undefined;
@@ -37,6 +38,7 @@ export type AppStackParamList = {
     Reel: { startFrom: number };
     BookingList: { date: any };
     ActivityBooks: { itemId: number };
+    MagicLogin: { 'magic-token': string };
 };
 
 const Stack = createStackNavigator<AppStackParamList>();
@@ -90,6 +92,7 @@ const AppStack = () => {
                 <Stack.Screen name="Reel" component={Reel} />
                 <Stack.Screen name="BookingList" component={BookingList} />
                 <Stack.Screen name="ActivityBooks" component={ActivityBooks} />
+                <Stack.Screen name="MagicLogin" component={MagicLogin} />
             </Stack.Navigator>
             <ZegoUIKitPrebuiltCallFloatingMinimizedView />
         </>
