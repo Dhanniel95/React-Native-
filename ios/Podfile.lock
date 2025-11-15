@@ -7,6 +7,9 @@ PODS:
   - FBLazyVector (0.82.1)
   - Firebase/CoreOnly (12.4.0):
     - FirebaseCore (~> 12.4.0)
+  - Firebase/Crashlytics (12.4.0):
+    - Firebase/CoreOnly
+    - FirebaseCrashlytics (~> 12.4.0)
   - Firebase/Messaging (12.4.0):
     - Firebase/CoreOnly
     - FirebaseMessaging (~> 12.4.0)
@@ -18,6 +21,15 @@ PODS:
     - FirebaseCore (~> 12.4.0)
   - FirebaseCoreInternal (12.4.0):
     - "GoogleUtilities/NSData+zlib (~> 8.1)"
+  - FirebaseCrashlytics (12.4.0):
+    - FirebaseCore (~> 12.4.0)
+    - FirebaseInstallations (~> 12.4.0)
+    - FirebaseRemoteConfigInterop (~> 12.4.0)
+    - FirebaseSessions (~> 12.4.0)
+    - GoogleDataTransport (~> 10.1)
+    - GoogleUtilities/Environment (~> 8.1)
+    - nanopb (~> 3.30910.0)
+    - PromisesObjC (~> 2.4)
   - FirebaseInstallations (12.4.0):
     - FirebaseCore (~> 12.4.0)
     - GoogleUtilities/Environment (~> 8.1)
@@ -32,6 +44,16 @@ PODS:
     - GoogleUtilities/Reachability (~> 8.1)
     - GoogleUtilities/UserDefaults (~> 8.1)
     - nanopb (~> 3.30910.0)
+  - FirebaseRemoteConfigInterop (12.4.0)
+  - FirebaseSessions (12.4.0):
+    - FirebaseCore (~> 12.4.0)
+    - FirebaseCoreExtension (~> 12.4.0)
+    - FirebaseInstallations (~> 12.4.0)
+    - GoogleDataTransport (~> 10.1)
+    - GoogleUtilities/Environment (~> 8.1)
+    - GoogleUtilities/UserDefaults (~> 8.1)
+    - nanopb (~> 3.30910.0)
+    - PromisesSwift (~> 2.1)
   - fmt (11.0.2)
   - glog (0.3.5)
   - GoogleDataTransport (10.1.0):
@@ -70,6 +92,8 @@ PODS:
   - nanopb/decode (3.30910.0)
   - nanopb/encode (3.30910.0)
   - PromisesObjC (2.4.0)
+  - PromisesSwift (2.4.0):
+    - PromisesObjC (= 2.4.0)
   - RCT-Folly (2024.11.18.00):
     - boost
     - DoubleConversion
@@ -2862,6 +2886,11 @@ PODS:
   - RNFBApp (23.5.0):
     - Firebase/CoreOnly (= 12.4.0)
     - React-Core
+  - RNFBCrashlytics (23.5.0):
+    - Firebase/Crashlytics (= 12.4.0)
+    - FirebaseCoreExtension
+    - React-Core
+    - RNFBApp
   - RNFBMessaging (23.5.0):
     - Firebase/Messaging (= 12.4.0)
     - FirebaseCoreExtension
@@ -3391,6 +3420,7 @@ DEPENDENCIES:
   - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
+  - "RNFBCrashlytics (from `../node_modules/@react-native-firebase/crashlytics`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
@@ -3412,12 +3442,16 @@ SPEC REPOS:
     - FirebaseCore
     - FirebaseCoreExtension
     - FirebaseCoreInternal
+    - FirebaseCrashlytics
     - FirebaseInstallations
     - FirebaseMessaging
+    - FirebaseRemoteConfigInterop
+    - FirebaseSessions
     - GoogleDataTransport
     - GoogleUtilities
     - nanopb
     - PromisesObjC
+    - PromisesSwift
     - SocketRocket
     - ZegoExpressEngine
     - ZegoUIKitReport
@@ -3612,6 +3646,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-device-info"
   RNFBApp:
     :path: "../node_modules/@react-native-firebase/app"
+  RNFBCrashlytics:
+    :path: "../node_modules/@react-native-firebase/crashlytics"
   RNFBMessaging:
     :path: "../node_modules/@react-native-firebase/messaging"
   RNGestureHandler:
@@ -3649,8 +3685,11 @@ SPEC CHECKSUMS:
   FirebaseCore: bb595f3114953664e3c1dc032f008a244147cfd3
   FirebaseCoreExtension: 7e1f7118ee970e001a8013719fb90950ee5e0018
   FirebaseCoreInternal: d7f5a043c2cd01a08103ab586587c1468047bca6
+  FirebaseCrashlytics: a6ece278a837c7e88de2d9b5da0a3542f2342395
   FirebaseInstallations: ae9f4902cb5bf1d0c5eaa31ec1f4e5495a0714e2
   FirebaseMessaging: d33971b7bb252745ea6cd31ab190d1a1df4b8ed5
+  FirebaseRemoteConfigInterop: 1e31ec72b89c9924367c59bfb5ec9ab60d1d6766
+  FirebaseSessions: ba7c7a7ca8696a8d540eb3fe3800fbe98c79786d
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: 5683914934d5b6e4240e497e0f4a3b42d1854183
   GoogleDataTransport: aae35b7ea0c09004c3797d53c8c41f66f219d6a7
@@ -3658,6 +3697,7 @@ SPEC CHECKSUMS:
   hermes-engine: 273e30e7fb618279934b0b95ffab60ecedb7acf5
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
+  PromisesSwift: 9d77319bbe72ebf6d872900551f7eeba9bce2851
   RCT-Folly: 846fda9475e61ec7bcbf8a3fe81edfcaeb090669
   RCTDeprecation: f17e2ebc07876ca9ab8eb6e4b0a4e4647497ae3a
   RCTRequired: e2c574c1b45231f7efb0834936bd609d75072b63
@@ -3743,6 +3783,7 @@ SPEC CHECKSUMS:
   RNDateTimePicker: 8247b87ac4e5225c54de856ff29b7f51538b80ad
   RNDeviceInfo: bcce8752b5043a623fe3c26789679b473f705d3c
   RNFBApp: 255fa19a91d6c1309e021ee75d5d209754e5961b
+  RNFBCrashlytics: ab632410ce1383051ac26ef44c966da651b7cf91
   RNFBMessaging: c304c1d8949f996d3eed1cf4eeba33148d13b4ea
   RNGestureHandler: 332c71177cd5c856673c7e7875fa3f92ba5a5cc2
   RNPermissions: dec3f5f31fbe9db14a1c8972a5e20099131da032

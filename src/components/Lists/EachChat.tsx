@@ -53,6 +53,9 @@ const EachChat = ({ chat, userType }: { chat: any; userType?: string }) => {
                         messageType: chatInfo?.messageType || '',
                         count: chat?.unreadMessages || 0,
                         isParticipant: `${isBtnAllowed}`,
+                        userPhone: chat.participants?.find(
+                            (c: any) => c.userId == chat.userId,
+                        )?.phone,
                     },
                 })
             }

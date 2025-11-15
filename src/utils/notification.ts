@@ -9,6 +9,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import authService from '../redux/auth/authService';
 import { displayError } from './display';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 const requestingPermission = async () => {
     let authStatus = await requestPermission(getMessaging());
@@ -38,9 +39,9 @@ const getFcmToken = async () => {
         requestingPermission();
         await getAPNSToken(getMessaging());
         const token = await getToken(getMessaging());
-        console.log(token, 'tokenTT');
         return token;
     } catch (err) {
+        crashlytics().recordError(err as Error);
         return undefined;
     }
 };
@@ -48,12 +49,11 @@ const getFcmToken = async () => {
 const saveToken = async () => {
     let token = await getFcmToken();
     if (token) {
-        let find = await AsyncStorage.getItem('@pushToken');
+        let find = await AsyncStorage.getItem('@pushTokens');
         if (!find) {
             try {
                 await authService.saveToken(token);
-                await AsyncStorage.setItem('@pushToken', 'saved');
-                console.log('SAVED NOTIFI');
+                await AsyncStorage.setItem('@pushTokens', 'saved');
             } catch (err) {
                 console.log(displayError(err, false), 'Error Sending');
             }

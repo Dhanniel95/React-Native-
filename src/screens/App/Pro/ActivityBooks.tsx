@@ -154,8 +154,6 @@ const ActivityBooks = () => {
         } catch (err) {}
     };
 
-    console.log(bookingData, 'bkd');
-
     return (
         <Layout>
             <GoBack

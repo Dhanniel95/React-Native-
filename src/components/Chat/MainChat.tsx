@@ -14,7 +14,6 @@ import {
     InputToolbar,
     Send,
 } from 'react-native-gifted-chat';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import ChatImage from './ChatImage';
 import ChatVideo from './ChatVideo';
 import ConsultantMenu from './ConsultantMenu';
@@ -406,7 +405,7 @@ const MainChat = ({ chatInfo }: { chatInfo?: any }) => {
                 renderSend={renderSend}
                 renderComposer={renderComposer}
                 renderInputToolbar={renderInputToolbar}
-                renderMessageImage={renderMessageImage}
+                // renderMessageImage={renderMessageImage}
                 renderMessageVideo={renderMessageVideo}
                 isKeyboardInternallyHandled={true}
                 inverted={messages.length > 0 ? true : false}
@@ -419,6 +418,15 @@ const MainChat = ({ chatInfo }: { chatInfo?: any }) => {
                         </View>
                     )
                 }
+                lightboxProps={{
+                    activeProps: {
+                        style: {
+                            flex: 1,
+                            resizeMode: 'contain',
+                            width: 400,
+                        },
+                    },
+                }}
                 renderBubble={(props: any) =>
                     props.currentMessage.messageType === 'receipt' ? (
                         <ReceiptChat

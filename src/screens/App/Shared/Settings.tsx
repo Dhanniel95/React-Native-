@@ -24,7 +24,7 @@ const Settings = () => {
         dispatch(saveChatId(''));
         dispatch(logOut());
         await AsyncStorage.removeItem('@accesstoken');
-        await AsyncStorage.removeItem('@pushToken');
+        await AsyncStorage.removeItem('@pushTokens');
         ZegoUIKitPrebuiltCallService.uninit();
     };
 

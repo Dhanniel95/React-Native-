@@ -14,21 +14,19 @@ const persistor = persistStore(store);
 const App = () => {
     return (
         <SafeAreaProvider>
-            <GestureHandlerRootView>
-                <Provider store={store}>
-                    <PersistGate persistor={persistor}>
-                        <NavContainer />
-                        {/* <Toaster /> */}
-                        <FlashMessage
-                            position="top"
-                            floating={true}
-                            textStyle={{ marginBottom: 5 }}
-                            style={{ marginTop: 40 }}
-                            titleStyle={{ marginTop: 10 }}
-                        />
-                    </PersistGate>
-                </Provider>
-            </GestureHandlerRootView>
+            <Provider store={store}>
+                <PersistGate persistor={persistor}>
+                    <NavContainer />
+                    {/* <Toaster /> */}
+                    <FlashMessage
+                        position="top"
+                        floating={true}
+                        textStyle={{ marginBottom: 5 }}
+                        style={{ marginTop: 40 }}
+                        titleStyle={{ marginTop: 10 }}
+                    />
+                </PersistGate>
+            </Provider>
         </SafeAreaProvider>
     );
 };

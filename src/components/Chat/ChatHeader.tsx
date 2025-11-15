@@ -71,6 +71,7 @@ const ChatHeader = ({ headerInfo }: { headerInfo: any }) => {
                         <ChatCall
                             userId={headerInfo.receiverId}
                             username={headerInfo.user}
+                            phone={headerInfo.userPhone}
                         />
                     )}
                 <TouchableOpacity onPress={openHandler}>

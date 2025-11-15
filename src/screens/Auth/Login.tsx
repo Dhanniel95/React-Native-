@@ -55,16 +55,21 @@ const Login = () => {
 
     const registerGuest = async () => {
         try {
-            setLoad(true);
             const token = await getFcmToken();
             const deviceId = await getUniqueId();
-            let payload = {
-                deviceId,
-                token: token || undefined,
-                role: 'guest',
-            };
-            dispatch(loginGuest(payload));
-            setLoad(false);
+            if (token && deviceId) {
+                setLoad(true);
+
+                let payload = {
+                    deviceId,
+                    token: token || undefined,
+                    role: 'guest',
+                };
+                dispatch(loginGuest(payload));
+                setLoad(false);
+            } else {
+                displayError('Something went wrong', true);
+            }
         } catch (err) {
             setLoad(false);
             displayError(

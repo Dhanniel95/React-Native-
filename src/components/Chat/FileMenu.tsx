@@ -40,6 +40,7 @@ const FileMenu = ({ onSend }: { onSend: (arg: any) => void }) => {
                 }}
                 type="images"
                 style={{ marginHorizontal: 15, alignItems: 'center' }}
+                blockApi={true}
             >
                 <View style={styles.innerBox}>
                     <Icon
@@ -58,7 +59,6 @@ const FileMenu = ({ onSend }: { onSend: (arg: any) => void }) => {
                     Select Image
                 </Text>
             </UploadField>
-
             <UploadField
                 setLoad={() => console.log('')}
                 setUrl={arg => {
@@ -67,6 +67,7 @@ const FileMenu = ({ onSend }: { onSend: (arg: any) => void }) => {
                 }}
                 type="videos"
                 style={{ marginHorizontal: 15, alignItems: 'center' }}
+                blockApi={true}
             >
                 <View style={styles.innerBox}>
                     <Icon
