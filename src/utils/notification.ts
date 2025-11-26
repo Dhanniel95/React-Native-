@@ -1,15 +1,20 @@
-import { PermissionsAndroid, Platform } from 'react-native';
+import { PermissionsAndroid, Platform, Vibration } from 'react-native';
 import {
     getToken,
     requestPermission,
     AuthorizationStatus,
     getMessaging,
     getAPNSToken,
+    onNotificationOpenedApp,
+    getInitialNotification,
+    onMessage,
 } from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import authService from '../redux/auth/authService';
 import { displayError } from './display';
 import crashlytics from '@react-native-firebase/crashlytics';
+import notifee from '@notifee/react-native';
+import * as Navigation from '../utils/navigation';
 
 const requestingPermission = async () => {
     let authStatus = await requestPermission(getMessaging());
@@ -31,6 +36,14 @@ const requestingPermission = async () => {
         } else {
             console.log('Notification permission denied');
         }
+    }
+
+    if (Platform.OS === 'android') {
+        await notifee.createChannel({
+            id: 'default',
+            name: 'Default Channel',
+            vibration: true,
+        });
     }
 };
 
@@ -61,4 +74,74 @@ const saveToken = async () => {
     }
 };
 
-export { getFcmToken, requestingPermission, saveToken };
+const navigateFromNotification = (data: any, role: string) => {
+    console.log(data, 'DATAA');
+    if (data?.chatId) {
+        if (role === 'consultant' || role === 'pro') {
+            Navigation.navigateParams('Chat', { params: data });
+        } else {
+            Navigation.navigateParams('Consult', { reload: true });
+        }
+    }
+};
+
+let notificationsInitialized = false;
+
+const initNotifications = () => {
+    if (!notificationsInitialized) {
+        setupNotificationHandlers('');
+        notificationsInitialized = true;
+    }
+};
+
+const setupNotificationHandlers = (role: string) => {
+    onNotificationOpenedApp(getMessaging(), remoteMessage => {
+        console.log(remoteMessage, 'remoteOpen');
+        navigateFromNotification(remoteMessage.data, role);
+    });
+
+    getInitialNotification(getMessaging()).then(remoteMessage => {
+        console.log(remoteMessage, 'remoteKilled');
+        navigateFromNotification(remoteMessage?.data, role);
+    });
+
+    const unsubscribe = onMessage(getMessaging(), async remoteMessage => {
+        console.log(remoteMessage, 'remote');
+        Vibration.vibrate(150);
+
+        await notifee.displayNotification({
+            id: 'chat-message',
+            title: remoteMessage.notification?.title,
+            body: remoteMessage.notification?.body,
+            android: {
+                channelId: 'default',
+                smallIcon: 'ic_launcher',
+                pressAction: {
+                    id: 'default',
+                },
+            },
+
+            ios: {
+                sound: 'default',
+            },
+        });
+    });
+
+    return unsubscribe;
+};
+
+const clearAllNotifications = async () => {
+    await notifee.cancelAllNotifications();
+    if (Platform.OS === 'ios') {
+        await notifee.setBadgeCount(0);
+    }
+};
+
+export {
+    getFcmToken,
+    requestingPermission,
+    saveToken,
+    setupNotificationHandlers,
+    clearAllNotifications,
+    initNotifications,
+};

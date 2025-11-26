@@ -16,3 +16,9 @@ export function reset(name) {
         });
     }
 }
+
+export function navigateParams(name, params) {
+    if (navigationRef.isReady()) {
+        navigationRef.navigate(name, params);
+    }
+}

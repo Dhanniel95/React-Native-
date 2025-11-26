@@ -374,20 +374,6 @@ const MainChat = ({ chatInfo }: { chatInfo?: any }) => {
         [],
     );
 
-    const renderMessageImage = useCallback(
-        ({ currentMessage }: { currentMessage?: IMessage }) => {
-            if (!currentMessage?.image) return null;
-
-            return (
-                <ChatImage
-                    uri={String(currentMessage.image)}
-                    load={currentMessage.pending || false}
-                />
-            );
-        },
-        [],
-    );
-
     return (
         <View style={{ flex: 1 }}>
             <GiftedChat
@@ -405,7 +391,6 @@ const MainChat = ({ chatInfo }: { chatInfo?: any }) => {
                 renderSend={renderSend}
                 renderComposer={renderComposer}
                 renderInputToolbar={renderInputToolbar}
-                // renderMessageImage={renderMessageImage}
                 renderMessageVideo={renderMessageVideo}
                 isKeyboardInternallyHandled={true}
                 inverted={messages.length > 0 ? true : false}

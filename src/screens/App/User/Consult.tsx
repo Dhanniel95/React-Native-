@@ -5,16 +5,28 @@ import MainChat from '../../../components/Chat/MainChat';
 import { useAppDispatch, useAppSelector } from '../../../utils/hooks';
 import chatService from '../../../redux/chat/chatService';
 import { consultantChatting, saveChatId } from '../../../redux/chat/chatSlice';
+import { useIsFocused } from '@react-navigation/native';
+import { clearAllNotifications } from '../../../utils/notification';
 
-const Consult = () => {
+const Consult = ({ route }: { route: any }) => {
     const dispatch = useAppDispatch();
+
+    const isFocused = useIsFocused();
 
     const { userChatRoomId } = useAppSelector(state => state.chat);
     const { consultantChat } = useAppSelector(state => state.chat);
 
+    const reload = route?.params?.reload;
+
+    useEffect(() => {
+        if (isFocused) {
+            clearAllNotifications();
+        }
+    }, [isFocused]);
+
     useEffect(() => {
         loadRooms();
-    }, []);
+    }, [reload]);
 
     const loadRooms = async () => {
         try {

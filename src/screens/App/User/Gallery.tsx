@@ -67,8 +67,6 @@ const Gallery = () => {
         }, 2000);
     }, []);
 
-    console.log(getFcmToken());
-
     return (
         <View style={{ flex: 1, backgroundColor: '#FFF' }}>
             <Header />

@@ -221,7 +221,7 @@ const Login = () => {
                                     ) : (
                                         <TouchableOpacity
                                             onPress={registerGuest}
-                                            disabled={loading}
+                                            disabled={load}
                                             style={{
                                                 borderBottomWidth: 1,
                                                 borderBottomColor: '#FFF',
