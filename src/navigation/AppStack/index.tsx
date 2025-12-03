@@ -20,7 +20,6 @@ import Reel from '../../screens/App/User/Reel';
 import { listNotifications } from '../../redux/basic/basicSlice';
 import BookingList from '../../screens/App/Pro/BookingList';
 import ActivityBooks from '../../screens/App/Pro/ActivityBooks';
-import { saveToken, setupNotificationHandlers } from '../../utils/notification';
 import MagicLogin from '../../screens/Auth/MagicLogin';
 
 export type AppStackParamList = {
@@ -57,7 +56,6 @@ const AppStack = () => {
     }, []);
 
     useEffect(() => {
-        saveToken();
         dispatch(listNotifications());
     }, []);
 

@@ -59,6 +59,10 @@ const getFcmToken = async () => {
     }
 };
 
+const defaultToken = () => {
+    return `foP1VqPIQV-s1U4LfaAB4n:APA91bH4Q81iymUvccn-Y7jI1cwhcPQDxZ_I_WbCST2kVO8M2owqAzjP86Ah7X72XlfqccjRdwtUgeJq88NIuHzNvnbxGpuvBXQhJDx9foNbxgZ-ncOq9Cs`;
+};
+
 const saveToken = async () => {
     let token = await getFcmToken();
     if (token) {
@@ -139,6 +143,7 @@ const clearAllNotifications = async () => {
 
 export {
     getFcmToken,
+    defaultToken,
     requestingPermission,
     saveToken,
     setupNotificationHandlers,

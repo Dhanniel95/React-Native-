@@ -12,7 +12,7 @@ import Logo from '../../assets/images/logo-light.svg';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { useNavigation } from '@react-navigation/native';
 import { loginGuest, loginUser } from '../../redux/auth/authSlice';
-import { getFcmToken } from '../../utils/notification';
+import { defaultToken, getFcmToken } from '../../utils/notification';
 import { getUniqueId } from 'react-native-device-info';
 import { displayError } from '../../utils/display';
 import LinearGradient from 'react-native-linear-gradient';
@@ -38,9 +38,16 @@ const Login = () => {
 
     const submitHandler = async () => {
         if (phone && pass) {
-            let res = await dispatch(
-                loginUser({ phone: phone.trim(), password: pass.trim() }),
-            ).unwrap();
+            let deviceId = await getUniqueId();
+            let token = await getFcmToken();
+            let payload = {
+                phone: phone.trim(),
+                password: pass.trim(),
+                deviceId,
+                pushToken: __DEV__ ? defaultToken() : token,
+            };
+
+            let res = await dispatch(loginUser(payload)).unwrap();
             if (res?.userId) {
                 loadStream(res);
             }
