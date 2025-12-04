@@ -79,7 +79,6 @@ const saveToken = async () => {
 };
 
 const navigateFromNotification = (data: any, role: string) => {
-    console.log(data, 'DATAA');
     if (data?.chatId) {
         if (role === 'consultant' || role === 'pro') {
             Navigation.navigateParams('Chat', { params: data });
@@ -91,26 +90,23 @@ const navigateFromNotification = (data: any, role: string) => {
 
 let notificationsInitialized = false;
 
-const initNotifications = () => {
+const initNotifications = (role: string) => {
     if (!notificationsInitialized) {
-        setupNotificationHandlers('');
+        setupNotificationHandlers(role);
         notificationsInitialized = true;
     }
 };
 
 const setupNotificationHandlers = (role: string) => {
     onNotificationOpenedApp(getMessaging(), remoteMessage => {
-        console.log(remoteMessage, 'remoteOpen');
         navigateFromNotification(remoteMessage.data, role);
     });
 
     getInitialNotification(getMessaging()).then(remoteMessage => {
-        console.log(remoteMessage, 'remoteKilled');
         navigateFromNotification(remoteMessage?.data, role);
     });
 
     const unsubscribe = onMessage(getMessaging(), async remoteMessage => {
-        console.log(remoteMessage, 'remote');
         Vibration.vibrate(150);
 
         await notifee.displayNotification({

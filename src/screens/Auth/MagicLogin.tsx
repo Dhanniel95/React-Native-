@@ -11,10 +11,12 @@ import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { AuthStackParamList } from '../../navigation/AuthStack';
 import authService from '../../redux/auth/authService';
-import { getUserInfo } from '../../redux/auth/authSlice';
+import { getUserInfo, logOut } from '../../redux/auth/authSlice';
 import { displayError } from '../../utils/display';
 import textStyles from '../../styles/textStyles';
 import formStyles from '../../styles/formStyles';
+import { getUniqueId } from 'react-native-device-info';
+import { getFcmToken } from '../../utils/notification';
 
 const MagicLogin = () => {
     const dispatch = useAppDispatch();
@@ -39,13 +41,20 @@ const MagicLogin = () => {
     const loginWithMagicLink = async () => {
         if (token) {
             try {
+                let deviceId = await getUniqueId();
+                let pushToken = await getFcmToken();
+                let payload = {
+                    token,
+                    deviceId,
+                    pushToken,
+                };
+                await AsyncStorage.removeItem('@accesstoken');
                 setLoad(true);
-                let res = await authService.magicLinkLogin(token);
+                let res = await authService.magicLinkLogin(payload);
                 setLoad(false);
                 if (res?.token) {
                     await AsyncStorage.setItem('@accesstoken', res.token);
                 }
-                console.log(res, 'RES');
                 let userMagic = res?.user;
                 if (userMagic?.userId) {
                     await dispatch(getUserInfo()).unwrap();
@@ -79,6 +88,14 @@ const MagicLogin = () => {
                 routes: [{ name: 'Login' }],
             });
         }
+    };
+
+    const onErrorCancel = () => {
+        dispatch(logOut());
+        displayError(
+            'Please Login Again. There was an issue login you in with the magic link',
+            true,
+        );
     };
 
     return (
@@ -157,7 +174,7 @@ const MagicLogin = () => {
                                 formStyles.mainBtn,
                                 { backgroundColor: 'red' },
                             ]}
-                            onPress={navigateTo}
+                            onPress={onErrorCancel}
                         >
                             <Text
                                 style={[textStyles.textBold, { color: '#FFF' }]}

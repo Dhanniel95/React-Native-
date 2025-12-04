@@ -6,15 +6,15 @@ import AuthStack from './AuthStack';
 import { initNotifications } from '../utils/notification';
 
 const RootNav = () => {
+    const { user } = useAppSelector(state => state.auth);
+
     useEffect(() => {
         const init = async () => {};
         init().finally(async () => {
             await BootSplash.hide({ fade: true });
-            initNotifications();
+            initNotifications(user.role);
         });
     }, []);
-
-    const { user } = useAppSelector(state => state.auth);
 
     return user?.userId ? <AppStack /> : <AuthStack />;
 };

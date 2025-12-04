@@ -89,10 +89,8 @@ const generateToken = async (userId: string) => {
     return data;
 };
 
-const magicLinkLogin = async (token: any) => {
-    const { data } = await apiRequest().post(`/auth/login/magic`, {
-        token,
-    });
+const magicLinkLogin = async (obj: any) => {
+    const { data } = await apiRequest().post(`/auth/login/magic`, obj);
     return data?.data;
 };
 

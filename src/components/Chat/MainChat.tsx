@@ -21,7 +21,7 @@ import FileMenu from './FileMenu';
 import GalleryCheck from './GalleryCheck';
 import ItemChat from './ItemChat';
 import ReceiptChat from './ReceiptChat';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { getSocket } from '../../utils/socket';
 import { useAppSelector } from '../../utils/hooks';
 import { mapChatToGifted } from '../../utils/data';
@@ -33,6 +33,8 @@ import colors from '../../utils/colors';
 const MainChat = ({ chatInfo }: { chatInfo?: any }) => {
     const navigation = useNavigation();
 
+    const isFocused = useIsFocused();
+
     const [messages, setMessages] = useState<IMessage[]>([]);
     const [showMenu, setShowMenu] = useState(false);
     const [showDoc, setShowDoc] = useState(false);
@@ -43,8 +45,10 @@ const MainChat = ({ chatInfo }: { chatInfo?: any }) => {
     const { userChatRoomId } = useAppSelector(state => state.chat);
 
     useEffect(() => {
-        fetchMessages(true);
-    }, [userChatRoomId]);
+        if (isFocused) {
+            fetchMessages(true);
+        }
+    }, [userChatRoomId, isFocused]);
 
     useEffect(() => {
         if (!socket) return;

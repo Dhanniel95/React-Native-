@@ -26,7 +26,7 @@ const listGuestChats = async () => {
 
 const listMyCustomersChats = async () => {
     const { data } = await apiRequest().get(
-        `/chats/chatroom/me/customers?cursor=0&take=200&desc=true`,
+        `/chats/chatroom/me/customers?cursor=0&take=200`,
     );
     return data;
 };
