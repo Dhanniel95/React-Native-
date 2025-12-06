@@ -13,7 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import authService from '../redux/auth/authService';
 import { displayError } from './display';
 import crashlytics from '@react-native-firebase/crashlytics';
-import notifee from '@notifee/react-native';
+import notifee, { AndroidImportance } from '@notifee/react-native';
 import * as Navigation from '../utils/navigation';
 
 const requestingPermission = async () => {
@@ -137,6 +137,41 @@ const clearAllNotifications = async () => {
     }
 };
 
+async function displayMessage(remoteMessage: any) {
+    const groupKey = remoteMessage.data?.chatId || 'id';
+
+    const channelId = await notifee.createChannel({
+        id: 'chat-messages',
+        name: 'Chat Messages',
+        importance: AndroidImportance.HIGH,
+    });
+
+    // Child notification (unique ID)
+    await notifee.displayNotification({
+        id: Date.now().toString(),
+        title: remoteMessage.notification?.title,
+        body: remoteMessage.notification?.body,
+        android: {
+            channelId,
+            groupId: `${groupKey}`,
+            groupSummary: false,
+            pressAction: { id: 'default' },
+        },
+    });
+
+    // Create summary notification (same groupId)
+    await notifee.displayNotification({
+        id: `summary-${groupKey}`,
+        title: 'New messages',
+        body: 'You have unread messages.',
+        android: {
+            channelId,
+            groupId: groupKey,
+            groupSummary: true,
+        },
+    });
+}
+
 export {
     getFcmToken,
     defaultToken,
@@ -145,4 +180,5 @@ export {
     setupNotificationHandlers,
     clearAllNotifications,
     initNotifications,
+    displayMessage,
 };

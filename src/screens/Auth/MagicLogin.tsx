@@ -48,15 +48,17 @@ const MagicLogin = () => {
                     deviceId,
                     pushToken,
                 };
+                console.log(payload, 'PAYLOAD');
                 await AsyncStorage.removeItem('@accesstoken');
                 setLoad(true);
                 let res = await authService.magicLinkLogin(payload);
+                console.log(res, 'RESTT');
                 setLoad(false);
-                if (res?.token) {
-                    await AsyncStorage.setItem('@accesstoken', res.token);
+                if (res?.jwtToken) {
+                    await AsyncStorage.setItem('@accesstoken', res.jwtToken);
                 }
                 let userMagic = res?.user;
-                if (userMagic?.userId) {
+                if (userMagic) {
                     await dispatch(getUserInfo()).unwrap();
                     navigation.navigate('AppTabs');
                     navigation.reset({
@@ -65,6 +67,7 @@ const MagicLogin = () => {
                     });
                 }
             } catch (err) {
+                console.log(err, 'ERR_TT');
                 setLoad(false);
                 displayError(err, true);
                 setError(true);

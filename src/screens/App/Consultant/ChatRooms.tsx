@@ -49,6 +49,7 @@ const ChatRooms = () => {
         if (!socket) return;
 
         socket.on('message:new:customer', data => {
+            console.log(data, 'new');
             listCustomers();
             listMyCustomers();
         });
@@ -163,9 +164,21 @@ const ChatRooms = () => {
 
     const arrayType = (type: string) => {
         if (activeTab === 1) {
-            return guestList[type];
+            return sortedArr(guestList[type]);
         } else if (activeTab === 2) {
-            return customersList[type]?.slice().sort((a: any, b: any) => {
+            return sortedArr(customersList[type]);
+        } else if (activeTab === 3) {
+            return sortedArr(myGuestList?.data);
+        } else if (activeTab === 4) {
+            return sortedArr(myCustomersList[type]);
+        } else {
+            return sortedArr(braidersList[type]);
+        }
+    };
+
+    const sortedArr = (arr: any) => {
+        if (Array.isArray(arr) && arr?.length > 0) {
+            return arr.slice().sort((a: any, b: any) => {
                 const dateA = a.chat?.updatedAt
                     ? new Date(a.chat.updatedAt).getTime()
                     : 0;
@@ -174,12 +187,8 @@ const ChatRooms = () => {
                     : 0;
                 return dateB - dateA;
             });
-        } else if (activeTab === 3) {
-            return myGuestList?.data;
-        } else if (activeTab === 4) {
-            return myCustomersList[type];
         } else {
-            return braidersList[type];
+            return [];
         }
     };
 

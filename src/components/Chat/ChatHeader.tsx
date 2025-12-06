@@ -11,12 +11,21 @@ const ChatHeader = ({ headerInfo }: { headerInfo: any }) => {
     const navigation = useNavigation<any>();
 
     const { user } = useAppSelector(state => state.auth);
+    const { usersOnline } = useAppSelector(state => state.chat);
 
     const [openMenu, setOpenMenu] = useState(false);
 
     const openHandler = () => {
         if (user.role === 'consultant') {
             setOpenMenu(!openMenu);
+        }
+    };
+
+    const isOnline = () => {
+        if (usersOnline.includes(headerInfo?.receiverId as never)) {
+            return true;
+        } else {
+            return false;
         }
     };
 
@@ -60,6 +69,8 @@ const ChatHeader = ({ headerInfo }: { headerInfo: any }) => {
                     <Text style={[textStyles.text, { fontSize: 13 }]}>
                         {user.role === 'user' || user.role === 'guest'
                             ? 'Available (7am - 7pm)'
+                            : isOnline()
+                            ? 'Online'
                             : 'Active'}
                     </Text>
                 </View>

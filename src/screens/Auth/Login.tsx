@@ -44,7 +44,7 @@ const Login = () => {
                 phone: phone.trim(),
                 password: pass.trim(),
                 deviceId,
-                pushToken: __DEV__ ? defaultToken() : token,
+                pushToken: __DEV__ ? defaultToken : token,
             };
 
             let res = await dispatch(loginUser(payload)).unwrap();
@@ -66,13 +66,12 @@ const Login = () => {
             const deviceId = await getUniqueId();
             if (token && deviceId) {
                 setLoad(true);
-
                 let payload = {
                     deviceId,
-                    token: token || undefined,
+                    token,
                     role: 'guest',
                 };
-                dispatch(loginGuest(payload));
+                await dispatch(loginGuest(payload)).unwrap();
                 setLoad(false);
             } else {
                 displayError('Something went wrong', true);

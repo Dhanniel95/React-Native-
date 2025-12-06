@@ -12,35 +12,35 @@ const listChatMessages = async (obj: any) => {
 
 const listCustomersChats = async (search: string) => {
     const { data } = await apiRequest().get(
-        `/chats/chatroom/customers?cursor=0&take=3000&desc=true&search=${search}`,
+        `/chats/chatroom/customers?cursor=0&take=5000&desc=true&search=${search}`,
     );
     return data;
 };
 
 const listGuestChats = async () => {
     const { data } = await apiRequest().get(
-        `/chats/chatroom/guests?cursor=0&take=200&desc=true`,
+        `/chats/chatroom/guests?cursor=0&take=5000&desc=true`,
     );
     return data;
 };
 
 const listMyCustomersChats = async () => {
     const { data } = await apiRequest().get(
-        `/chats/chatroom/me/customers?cursor=0&take=200`,
+        `/chats/chatroom/me/customers?cursor=0&take=5000`,
     );
     return data;
 };
 
 const listMyGuestChats = async () => {
     const { data } = await apiRequest().get(
-        `/chats/chatroom/me/guests?cursor=0&take=200&desc=true`,
+        `/chats/chatroom/me/guests?cursor=0&take=5000&desc=true`,
     );
     return data;
 };
 
 const listBraidersChats = async () => {
     const { data } = await apiRequest().get(
-        `/chats/chatroom/me/pros?cursor=0&take=200&desc=true`,
+        `/chats/chatroom/me/pros?cursor=0&take=500&desc=true`,
     );
     return data;
 };

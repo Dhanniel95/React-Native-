@@ -1,7 +1,13 @@
+import { Alert } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
+import store from '../redux/store';
+import { logOut } from '../redux/auth/authSlice';
+
+let showing401Alert = false;
 
 const displayError = (error: any, display: boolean) => {
     let status = error?.response?.status;
+    console.log(status, 'status');
     let message;
     if (error?.response?.data?.message) {
         message = error.response.data.message;
@@ -26,6 +32,30 @@ const displayError = (error: any, display: boolean) => {
             description: message,
             type: 'danger',
         });
+    }
+    if (status === 401 && !showing401Alert) {
+        showing401Alert = true;
+
+        Alert.alert(
+            'Do you want to Logout?',
+            'Looks like you do not have access to continue',
+            [
+                {
+                    text: 'Logout',
+                    onPress: () => {
+                        showing401Alert = false;
+                        store.dispatch(logOut());
+                    },
+                },
+                {
+                    text: 'Cancel',
+                    onPress: () => {
+                        showing401Alert = false;
+                    },
+                },
+            ],
+            { cancelable: false },
+        );
     }
     return message;
 };

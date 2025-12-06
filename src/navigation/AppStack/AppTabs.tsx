@@ -19,7 +19,7 @@ import ProProfile from '../../screens/App/Pro/ProProfile';
 import ProChats from '../../screens/App/Pro/ProChats';
 import { Alert, TouchableOpacity } from 'react-native';
 import Exit from '../../screens/App/User/Exit';
-import { saveChatId } from '../../redux/chat/chatSlice';
+import { saveChatId, updateOnlineUsers } from '../../redux/chat/chatSlice';
 import { onUserLogin } from '../../utils/zego';
 import ModalComponent from '../../components/ModalComponent';
 import GuestToUser from '../../components/User/GuestToUser';
@@ -75,6 +75,12 @@ const AppTabs = () => {
             console.log('Error With Connection', err);
         });
 
+        socket.on('users:online', data => {
+            if (Array.isArray(data)) {
+                dispatch(updateOnlineUsers(data));
+            }
+        });
+
         socket.on('auth:new-token', async data => {
             if (data?.data?.token) {
                 await AsyncStorage.setItem('@accesstoken', data.data.token);
@@ -88,9 +94,9 @@ const AppTabs = () => {
             }
         });
 
-        // socket.onAny((event, ...args) => {
-        //     console.log('Got event:', event, args);
-        // });
+        socket.onAny((event, ...args) => {
+            console.log('Got event:', event, args);
+        });
     };
 
     const logoutHandler = () => {
