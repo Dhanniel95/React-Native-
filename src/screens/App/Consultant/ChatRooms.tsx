@@ -235,26 +235,15 @@ const ChatRooms = () => {
                     <ChatTabs
                         activeTab={activeTab}
                         setActiveTab={setActiveTab}
-                        guestList={guestList?.chatRooms?.reduce(
-                            (a: any, b: any) => a + (b.unreadMessages || 0),
-                            0,
-                        )}
-                        braidersList={braidersList?.chatRooms?.reduce(
-                            (a: any, b: any) => a + (b.unreadMessages || 0),
-                            0,
-                        )}
-                        customersList={customersList?.chatRooms?.reduce(
-                            (a: any, b: any) => a + (b.unreadMessages || 0),
-                            0,
-                        )}
-                        myCustomersList={myCustomersList?.chatRooms?.reduce(
-                            (a: any, b: any) => a + (b.unreadMessages || 0),
-                            0,
-                        )}
-                        myGuestList={myGuestList?.data?.reduce(
-                            (a: any, b: any) => a + (b.unreadMessages || 0),
-                            0,
-                        )}
+                        guestList={guestList?.cursor?.totalUnreadMessage}
+                        braidersList={braidersList?.cursor?.totalUnreadMessage}
+                        customersList={
+                            customersList?.cursor?.totalUnreadMessage
+                        }
+                        myCustomersList={
+                            myCustomersList?.cursor?.totalUnreadMessage
+                        }
+                        myGuestList={myGuestList?.cursor?.totalUnreadMessage}
                     />
                 </View>
                 {activeTab === 2 && (

@@ -42,7 +42,7 @@ const MainChat = ({ chatInfo }: { chatInfo?: any }) => {
     const socket = getSocket();
 
     const { user } = useAppSelector(state => state.auth);
-    const { userChatRoomId } = useAppSelector(state => state.chat);
+    const { userChatRoomId, unreadCount } = useAppSelector(state => state.chat);
 
     useEffect(() => {
         if (isFocused) {
@@ -95,19 +95,31 @@ const MainChat = ({ chatInfo }: { chatInfo?: any }) => {
     }, []);
 
     const readLastMessages = async (msgs: any) => {
-        if (chatInfo?.chatId) {
+        let id = chatInfo?.chatRoomId || userChatRoomId;
+        let count =
+            user.role === 'guest' || user.role === 'user'
+                ? unreadCount
+                : chatInfo?.count;
+        if (id) {
             let findMyMsgs = msgs?.filter(
                 (m: any) => m.user._id != user.userId,
             );
-            let notSeen = findMyMsgs?.slice(0, chatInfo?.count || 1);
-            if (socket?.connected) {
-                notSeen.map((msg: any) => {
-                    socket.emit(
-                        'message:read',
-                        Number(msg._id),
-                        (response: any) => console.log(response, 'response'),
-                    );
-                });
+            if (count > 0) {
+                let notSeen = findMyMsgs?.slice(0, count);
+                if (socket?.connected) {
+                    notSeen.map((msg: any) => {
+                        socket.emit(
+                            'message:read',
+                            Number(msg._id),
+                            (response: any) =>
+                                console.log(response, 'response'),
+                        );
+                    });
+                }
+
+                socket?.emit('message:allRead', Number(id), (response: any) =>
+                    console.log(response, 'responseRead'),
+                );
             }
         }
     };

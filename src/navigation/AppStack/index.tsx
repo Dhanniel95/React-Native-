@@ -53,7 +53,7 @@ const AppStack = () => {
         if (user?.role === 'user' && !user.faceIdPhotoUrl) {
             navigation.navigate('UpdateFace');
         }
-    }, []);
+    }, [user]);
 
     useEffect(() => {
         dispatch(listNotifications());

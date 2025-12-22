@@ -95,6 +95,9 @@ const MagicLogin = () => {
 
     const onErrorCancel = () => {
         dispatch(logOut());
+        if (!user?.userId) {
+            navigation.navigate('Login');
+        }
         displayError(
             'Please Login Again. There was an issue login you in with the magic link',
             true,

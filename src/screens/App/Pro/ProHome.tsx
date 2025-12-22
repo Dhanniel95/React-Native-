@@ -2,14 +2,18 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { Alert, View } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import { useAppSelector } from '../../../utils/hooks';
+import { useAppDispatch, useAppSelector } from '../../../utils/hooks';
 import { getCurrentLocation } from '../../../utils/location';
 import basicService from '../../../redux/basic/basicService';
 import bookService from '../../../redux/book/bookService';
 import Header from '../../../components/Header';
+import chatService from '../../../redux/chat/chatService';
+import { updateUnreadCount } from '../../../redux/chat/chatSlice';
 
 const HomeScreen = () => {
     const navigation = useNavigation<any>();
+
+    const dispatch = useAppDispatch();
 
     const [appointments, setAppointments] = useState<any>([]);
     const [markedDates, setMarkedDates] = useState({});
@@ -19,6 +23,7 @@ const HomeScreen = () => {
     useEffect(() => {
         updateLocation();
         listBookings();
+        listChats();
     }, []);
 
     useEffect(() => {
@@ -97,6 +102,21 @@ const HomeScreen = () => {
                 date: selectedDate,
             });
         }
+    };
+
+    const listChats = async () => {
+        try {
+            let res = await chatService.listChatRooms();
+            if (Array.isArray(res?.data?.chatRooms)) {
+                let count = res.data.chatRooms?.reduce(
+                    (a: any, b: any) => a + b.unreadMessages,
+                    0,
+                );
+                if (!isNaN(count)) {
+                    dispatch(updateUnreadCount(count));
+                }
+            }
+        } catch (err) {}
     };
 
     return (

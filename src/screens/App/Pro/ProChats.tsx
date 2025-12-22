@@ -6,8 +6,12 @@ import textStyles from '../../../styles/textStyles';
 import EachChat from '../../../components/Lists/EachChat';
 import colors from '../../../utils/colors';
 import SkeletonLoad from '../../../components/SkeletonLoad';
+import { useAppDispatch } from '../../../utils/hooks';
+import { updateUnreadCount } from '../../../redux/chat/chatSlice';
 
 const Chats = () => {
+    const dispatch = useAppDispatch();
+
     const [list, setList] = useState<any>([]);
     const [refreshing, setRefreshing] = useState(false);
     const [load, setLoad] = useState(false);
@@ -27,6 +31,12 @@ const Chats = () => {
             setLoad(false);
             if (Array.isArray(res?.data?.chatRooms)) {
                 setList(res.data.chatRooms);
+                let count = res.data.chatRooms?.reduce(
+                    (a: any, b: any) => a + b.unreadMessages,
+                );
+                if (!isNaN(count)) {
+                    dispatch(updateUnreadCount(count));
+                }
             }
         } catch (err) {
             setLoad(false);

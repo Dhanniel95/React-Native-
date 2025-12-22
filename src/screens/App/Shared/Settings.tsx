@@ -108,16 +108,16 @@ const Settings = () => {
                             <>
                                 <View style={{ height: 50 }} />
                                 <ButtonSettings
-                                    name="Deactivate Account"
+                                    name="Delete Account"
                                     iconName="cancel"
                                     onPress={() =>
                                         Alert.alert(
-                                            'Deactivate Account',
-                                            'Are you sure you want to deactivate your account?',
+                                            'Delete Account',
+                                            'Are you sure you want to proceed? Your account with us will be deleted and there`s no going back',
                                             [
                                                 { text: 'NO' },
                                                 {
-                                                    text: 'Deactivate',
+                                                    text: 'Delete',
                                                     onPress: () =>
                                                         deactivateHandler(),
                                                     style: 'destructive',

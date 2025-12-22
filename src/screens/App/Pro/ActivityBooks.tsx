@@ -151,6 +151,7 @@ const ActivityBooks = () => {
         try {
             let phoneUrl = `tel:${bookingData.user?.phone}`;
             Linking.openURL(phoneUrl);
+            setOpenCall(false);
         } catch (err) {}
     };
 
@@ -507,6 +508,7 @@ const ActivityBooks = () => {
                         backgroundColor={colors.secondary}
                         textColor={'#FFF'}
                         onPressed={(errorCode: any, errorMessage: any) => {
+                            setOpenCall(false);
                             if (errorCode == 0) {
                                 // Successful
                             } else {

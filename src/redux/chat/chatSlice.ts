@@ -4,6 +4,7 @@ const initialState = {
     userChatRoomId: '',
     consultantChat: {} as any,
     usersOnline: [],
+    unreadCount: 0,
 };
 
 export const saveChatId = createAsyncThunk(
@@ -35,6 +36,9 @@ const chatSlice = createSlice({
         updateOnlineUsers: (state, action) => {
             state.usersOnline = action.payload;
         },
+        updateUnreadCount: (state, action) => {
+            state.unreadCount = action.payload;
+        },
     },
     extraReducers(builder) {
         builder.addCase(saveChatId.fulfilled, (state, action) => {
@@ -46,6 +50,6 @@ const chatSlice = createSlice({
     },
 });
 
-export const { updateOnlineUsers } = chatSlice.actions;
+export const { updateOnlineUsers, updateUnreadCount } = chatSlice.actions;
 
 export default chatSlice.reducer;

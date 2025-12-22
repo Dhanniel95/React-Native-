@@ -19,11 +19,17 @@ import ProProfile from '../../screens/App/Pro/ProProfile';
 import ProChats from '../../screens/App/Pro/ProChats';
 import { Alert, TouchableOpacity } from 'react-native';
 import Exit from '../../screens/App/User/Exit';
-import { saveChatId, updateOnlineUsers } from '../../redux/chat/chatSlice';
+import {
+    consultantChatting,
+    saveChatId,
+    updateOnlineUsers,
+    updateUnreadCount,
+} from '../../redux/chat/chatSlice';
 import { onUserLogin } from '../../utils/zego';
 import ModalComponent from '../../components/ModalComponent';
 import GuestToUser from '../../components/User/GuestToUser';
 import { onboardAcc } from '../../redux/basic/basicSlice';
+import chatService from '../../redux/chat/chatService';
 
 const Tab = createBottomTabNavigator();
 
@@ -33,6 +39,7 @@ const AppTabs = () => {
     const [openUser, setOpenUser] = useState(false);
 
     const { user } = useAppSelector(state => state.auth);
+    const { unreadCount } = useAppSelector(state => state.chat);
 
     useEffect(() => {
         const init = async () => {
@@ -55,6 +62,9 @@ const AppTabs = () => {
         if (user.role !== 'guest') {
             dispatch(getUserInfo());
             onUserLogin(`${user.userId}`, user.name, user.faceIdPhotoUrl);
+        }
+        if (user.role === 'user') {
+            loadRooms();
         }
     }, []);
 
@@ -97,6 +107,28 @@ const AppTabs = () => {
         socket.onAny((event, ...args) => {
             console.log('Got event:', event, args);
         });
+    };
+
+    const loadRooms = async () => {
+        try {
+            let res = await chatService.listChatRooms();
+
+            if (
+                Array.isArray(res?.data?.chatRooms) &&
+                res?.data?.chatRooms?.length > 0
+            ) {
+                let id = res.data.chatRooms[0].chatRoomId;
+                let receiver = res.data.chatRooms[0]?.chat?.receiver;
+                let count = res.data.chatRooms[0]?.unreadMessages;
+                dispatch(saveChatId(id));
+                dispatch(consultantChatting(receiver));
+                dispatch(updateUnreadCount(count));
+            } else {
+                dispatch(saveChatId(''));
+            }
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     const logoutHandler = () => {
@@ -179,6 +211,7 @@ const AppTabs = () => {
                                 tabBarStyle: {
                                     display: 'none',
                                 },
+                                tabBarBadge: unreadCount || undefined,
                             }}
                         />
                     </>
@@ -235,6 +268,7 @@ const AppTabs = () => {
                                             name={'message-square'}
                                         />
                                     ),
+                                    tabBarBadge: unreadCount || undefined,
                                 }}
                             />
                         )}

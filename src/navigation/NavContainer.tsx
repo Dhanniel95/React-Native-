@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
     NavigationContainer,
     getStateFromPath,
@@ -15,38 +15,40 @@ const linking = {
             MagicLogin: 'login',
         },
     },
+    async getInitialURL() {
+        const url = await Linking.getInitialURL();
+        console.log('🚀 getInitialURL', url);
+        return url;
+    },
+
+    subscribe(listener: (url: string) => void) {
+        const onReceiveURL = ({ url }: { url: string }) => {
+            console.log('📥 subscribe URL', url);
+            listener(url);
+        };
+
+        const subscription = Linking.addEventListener('url', onReceiveURL);
+
+        return () => subscription.remove();
+    },
 };
 
 const NavContainer = () => {
-    useEffect(() => {
-        const handleDeepLink = (event: { url: string }) => {
-            console.log('🔗 Received URL while running:', event.url);
-
-            // Parse the URL into a navigation state using your linking config
-            const state = getStateFromPath(event.url, linking.config);
-
-            if (state && navigationRef.current) {
-                console.log(
-                    '🧭 Parsed state from URL:',
-                    JSON.stringify(state, null, 2),
-                );
-                navigationRef.current.resetRoot(state);
-            } else {
-                console.warn(
-                    '⚠️ Could not parse or handle deep link:',
-                    event.url,
-                );
-            }
-        };
-
-        const subscription = Linking.addEventListener('url', handleDeepLink);
-
-        return () => subscription.remove();
-    }, []);
+    const isReadyRef = useRef(false);
 
     return (
-        <NavigationContainer ref={navigationRef} linking={linking}>
-            <ZegoCallInvitationDialog />
+        <NavigationContainer
+            ref={navigationRef}
+            linking={linking}
+            onReady={() => {
+                isReadyRef.current = true;
+                console.log('✅ Navigation READY');
+            }}
+            onStateChange={() => {
+                console.log('🧭 Navigation STATE changed');
+            }}
+        >
+            {/* <ZegoCallInvitationDialog /> */}
             <RootNav />
         </NavigationContainer>
     );

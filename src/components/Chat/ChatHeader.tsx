@@ -21,6 +21,8 @@ const ChatHeader = ({ headerInfo }: { headerInfo: any }) => {
         }
     };
 
+    console.log(headerInfo, 'headerInfo');
+
     const isOnline = () => {
         if (usersOnline.includes(headerInfo?.receiverId as never)) {
             return true;

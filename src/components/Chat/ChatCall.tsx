@@ -22,6 +22,7 @@ const ChatCall = ({
         try {
             let phoneUrl = `tel:${phone}`;
             Linking.openURL(phoneUrl);
+            setOpenCall(false);
         } catch (err) {}
     };
 
@@ -54,6 +55,7 @@ const ChatCall = ({
                         backgroundColor={colors.secondary}
                         textColor={'#FFF'}
                         onPressed={(errorCode: any, errorMessage: any) => {
+                            setOpenCall(false);
                             if (errorCode == 0) {
                                 // Successful
                             } else {

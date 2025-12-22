@@ -7,7 +7,6 @@ let showing401Alert = false;
 
 const displayError = (error: any, display: boolean) => {
     let status = error?.response?.status;
-    console.log(status, 'status');
     let message;
     if (error?.response?.data?.message) {
         message = error.response.data.message;
