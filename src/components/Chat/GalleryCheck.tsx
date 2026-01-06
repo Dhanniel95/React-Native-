@@ -1,14 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
-import { useAppSelector } from '../../utils/hooks';
 import textStyles from '../../styles/textStyles';
 import formStyles from '../../styles/formStyles';
 
-const GalleryCheck = () => {
+const GalleryCheck = ({ onClick }: { onClick: () => void }) => {
     const navigation = useNavigation<any>();
-
-    const { user } = useAppSelector(state => state.auth);
 
     return (
         <View
@@ -27,7 +24,10 @@ const GalleryCheck = () => {
                 conversation
             </Text>
             <TouchableOpacity
-                onPress={() => navigation.navigate('Gallery')}
+                onPress={() => {
+                    onClick();
+                    navigation.navigate('Gallery');
+                }}
                 style={[
                     formStyles.mainBtn,
                     { marginTop: 25, borderRadius: 15 },

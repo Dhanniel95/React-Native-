@@ -84,8 +84,8 @@ android {
         applicationId "com.igoni.Hairsap"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 23
-        versionName "1.8.7"
+        versionCode 25
+        versionName "1.8.9"
     }
     signingConfigs {
         debug {

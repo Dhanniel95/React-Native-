@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import bookService from './bookService';
+import { displayError } from '../../utils/display';
 
 const initialState = {
     videos: [] as any,
@@ -19,6 +20,7 @@ export const listGallery = createAsyncThunk('book/gallery', async () => {
             return [];
         }
     } catch (error: any) {
+        displayError(error, false);
         return '';
     }
 });
@@ -29,7 +31,9 @@ const bookSlice = createSlice({
     reducers: {},
     extraReducers(builder) {
         builder.addCase(listGallery.fulfilled, (state, action) => {
-            state.videos = action.payload;
+            if (Array.isArray(action.payload)) {
+                state.videos = action.payload;
+            }
         });
     },
 });

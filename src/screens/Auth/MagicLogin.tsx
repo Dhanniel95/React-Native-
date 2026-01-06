@@ -11,7 +11,7 @@ import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { AuthStackParamList } from '../../navigation/AuthStack';
 import authService from '../../redux/auth/authService';
-import { getUserInfo, logOut } from '../../redux/auth/authSlice';
+import { logOut, saveUserData } from '../../redux/auth/authSlice';
 import { displayError } from '../../utils/display';
 import textStyles from '../../styles/textStyles';
 import formStyles from '../../styles/formStyles';
@@ -29,14 +29,14 @@ const MagicLogin = () => {
 
     const { user } = useAppSelector(state => state.auth);
 
-    const [error, setError] = useState(false);
-    const [load, setLoad] = useState(false);
-
     useEffect(() => {
         if (!user?.userId) {
             loginWithMagicLink();
         }
-    }, [token]);
+    }, []);
+
+    const [error, setError] = useState(false);
+    const [load, setLoad] = useState(false);
 
     const loginWithMagicLink = async () => {
         if (token) {
@@ -48,18 +48,19 @@ const MagicLogin = () => {
                     deviceId,
                     pushToken,
                 };
-                console.log(payload, 'PAYLOAD');
                 await AsyncStorage.removeItem('@accesstoken');
                 setLoad(true);
                 let res = await authService.magicLinkLogin(payload);
-                console.log(res, 'RESTT');
                 setLoad(false);
                 if (res?.jwtToken) {
                     await AsyncStorage.setItem('@accesstoken', res.jwtToken);
                 }
                 let userMagic = res?.user;
                 if (userMagic) {
-                    await dispatch(getUserInfo()).unwrap();
+                    dispatch(
+                        saveUserData({ ...res.user, changePassword: true }),
+                    );
+                    // await dispatch(getUserInfo()).unwrap();
                     navigation.navigate('AppTabs');
                     navigation.reset({
                         index: 0,
@@ -67,7 +68,6 @@ const MagicLogin = () => {
                     });
                 }
             } catch (err) {
-                console.log(err, 'ERR_TT');
                 setLoad(false);
                 displayError(err, true);
                 setError(true);
@@ -171,7 +171,26 @@ const MagicLogin = () => {
                 ) : load ? (
                     <ActivityIndicator color={'#FFF'} />
                 ) : (
-                    <></>
+                    <View style={{ alignItems: 'center' }}>
+                        <TouchableOpacity
+                            style={[
+                                formStyles.mainBtn,
+                                {
+                                    backgroundColor: 'red',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    width: 300,
+                                },
+                            ]}
+                            onPress={onErrorCancel}
+                        >
+                            <Text
+                                style={[textStyles.textBold, { color: '#FFF' }]}
+                            >
+                                Close
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
                 )}
                 {error && (
                     <View style={{ width: '60%', marginTop: 40 }}>

@@ -14,7 +14,6 @@ import {
     InputToolbar,
     Send,
 } from 'react-native-gifted-chat';
-import ChatImage from './ChatImage';
 import ChatVideo from './ChatVideo';
 import ConsultantMenu from './ConsultantMenu';
 import FileMenu from './FileMenu';
@@ -149,21 +148,46 @@ const MainChat = ({ chatInfo }: { chatInfo?: any }) => {
 
     const onSend = useCallback((newMessages: IMessage[] = []) => {
         let chatMsg = newMessages[0];
-        if (socket?.connected) {
-            socket.emit('message:new', {
-                message: chatMsg.text,
-                messageType: 'text',
-                receiverId: chatInfo.receiverId
-                    ? Number(chatInfo.receiverId)
-                    : undefined,
-                chatRoomId: chatInfo.chatRoomId
-                    ? Number(chatInfo.chatRoomId)
-                    : undefined,
-            });
-        }
         setMessages(previousMessages =>
-            GiftedChat.append(previousMessages, newMessages),
+            GiftedChat.append(previousMessages, [
+                { ...chatMsg, pending: true },
+            ]),
         );
+        if (socket?.connected) {
+            socket.emit(
+                'message:new',
+                {
+                    message: chatMsg.text,
+                    messageType: 'text',
+                    receiverId: chatInfo.receiverId
+                        ? Number(chatInfo.receiverId)
+                        : undefined,
+                    chatRoomId: chatInfo.chatRoomId
+                        ? Number(chatInfo.chatRoomId)
+                        : undefined,
+                },
+                (response: any) => {
+                    if (response?.data) {
+                        setMessages(prev =>
+                            prev.map(m =>
+                                m._id === chatMsg._id
+                                    ? {
+                                          ...m,
+                                          _id: response?.data?.chatId,
+                                          pending: false,
+                                          sent: true,
+                                      }
+                                    : m,
+                            ),
+                        );
+                    }
+                },
+            );
+        }
+
+        // setMessages(previousMessages =>
+        //     GiftedChat.append(previousMessages, newMessages),
+        // );
     }, []);
 
     const fromMedia = async (obj: any) => {
@@ -357,7 +381,6 @@ const MainChat = ({ chatInfo }: { chatInfo?: any }) => {
                         }}
                         placeholder="Type a message..."
                     />
-
                     <TouchableOpacity
                         onPress={() => setShowDoc(!showDoc)}
                         style={{ paddingLeft: 6 }}
@@ -415,7 +438,7 @@ const MainChat = ({ chatInfo }: { chatInfo?: any }) => {
                         <></>
                     ) : (
                         <View style={{ transform: [{ scaleY: -1 }] }}>
-                            <GalleryCheck />
+                            <GalleryCheck onClick={() => fetchMessages(true)} />
                         </View>
                     )
                 }

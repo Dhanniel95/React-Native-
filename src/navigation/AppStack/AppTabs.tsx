@@ -20,6 +20,7 @@ import ProChats from '../../screens/App/Pro/ProChats';
 import { Alert, TouchableOpacity } from 'react-native';
 import Exit from '../../screens/App/User/Exit';
 import {
+    clearConsultantChat,
     consultantChatting,
     saveChatId,
     updateOnlineUsers,
@@ -125,6 +126,7 @@ const AppTabs = () => {
                 dispatch(updateUnreadCount(count));
             } else {
                 dispatch(saveChatId(''));
+                dispatch(clearConsultantChat());
             }
         } catch (err) {
             console.log(err);
@@ -132,9 +134,9 @@ const AppTabs = () => {
     };
 
     const logoutHandler = () => {
+        dispatch(logOut());
         dispatch(saveChatId(''));
         dispatch(onboardAcc());
-        dispatch(logOut());
     };
 
     return (

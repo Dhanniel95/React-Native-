@@ -12,7 +12,7 @@ import Logo from '../../assets/images/logo-light.svg';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { useNavigation } from '@react-navigation/native';
 import { loginGuest, loginUser } from '../../redux/auth/authSlice';
-import { defaultToken, getFcmToken } from '../../utils/notification';
+import { getFcmToken } from '../../utils/notification';
 import { getUniqueId } from 'react-native-device-info';
 import { displayError } from '../../utils/display';
 import LinearGradient from 'react-native-linear-gradient';
@@ -44,7 +44,7 @@ const Login = () => {
                 phone: phone.trim(),
                 password: pass.trim(),
                 deviceId,
-                pushToken: __DEV__ ? defaultToken : token,
+                pushToken: token,
             };
 
             let res = await dispatch(loginUser(payload)).unwrap();
@@ -64,7 +64,7 @@ const Login = () => {
         try {
             const token = await getFcmToken();
             const deviceId = await getUniqueId();
-            if (token && deviceId) {
+            if (deviceId && token) {
                 setLoad(true);
                 let payload = {
                     deviceId,
@@ -74,7 +74,10 @@ const Login = () => {
                 await dispatch(loginGuest(payload)).unwrap();
                 setLoad(false);
             } else {
-                displayError('Something went wrong', true);
+                displayError(
+                    'Something went wrong. Ensure you have notification enabled.',
+                    true,
+                );
             }
         } catch (err) {
             setLoad(false);

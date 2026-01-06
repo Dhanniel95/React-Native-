@@ -25,12 +25,9 @@ const Consult = ({ route }: { route: any }) => {
     useEffect(() => {
         if (isFocused) {
             clearAllNotifications();
+            loadRooms();
         }
-    }, [isFocused]);
-
-    useEffect(() => {
-        loadRooms();
-    }, [reload]);
+    }, [isFocused, reload]);
 
     const loadRooms = async () => {
         try {

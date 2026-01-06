@@ -6,6 +6,7 @@ import {
     StyleSheet,
     Text,
     TextInput,
+    TouchableOpacity,
     View,
 } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../../../utils/hooks';
@@ -17,7 +18,7 @@ import Icon from '../../../components/Icon';
 import colors from '../../../utils/colors';
 import EachGallery from '../../../components/Lists/EachGallery';
 import GalleryLoad from '../../../components/GalleryLoad';
-import { getFcmToken } from '../../../utils/notification';
+import formStyles from '../../../styles/formStyles';
 
 const Gallery = () => {
     const dispatch = useAppDispatch();
@@ -129,6 +130,26 @@ const Gallery = () => {
                                         />
                                     </View>
                                 </View>
+                            </View>
+                        }
+                        ListEmptyComponent={
+                            <View
+                                style={{
+                                    flex: 1,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <TouchableOpacity style={[formStyles.mainBtn]}>
+                                    <Text
+                                        style={[
+                                            textStyles.textMid,
+                                            { color: '#FFF' },
+                                        ]}
+                                    >
+                                        Reload
+                                    </Text>
+                                </TouchableOpacity>
                             </View>
                         }
                     />

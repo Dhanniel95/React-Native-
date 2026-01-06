@@ -46,7 +46,7 @@ const UpdateFace = () => {
         } else {
             setHasCameraPermission(false);
         }
-    }, []);
+    }, [hasPermission]);
 
     const accessHandler = async () => {
         await Permission.requestMultiple([PERMISSION_TYPE.camera]);

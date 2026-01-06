@@ -16,6 +16,8 @@ const mapChatToGifted = (chat: any) => ({
     thumbnail: chat.media?.length > 0 ? chat.media[0]?.thumbnail : '',
     messageType: chat.messageType,
     metaData: chat.metaData,
+    sent: true,
+    // received: false,
 });
 
 const generateString = (length: number) => {

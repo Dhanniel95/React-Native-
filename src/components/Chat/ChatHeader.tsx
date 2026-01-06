@@ -21,8 +21,6 @@ const ChatHeader = ({ headerInfo }: { headerInfo: any }) => {
         }
     };
 
-    console.log(headerInfo, 'headerInfo');
-
     const isOnline = () => {
         if (usersOnline.includes(headerInfo?.receiverId as never)) {
             return true;
@@ -43,7 +41,13 @@ const ChatHeader = ({ headerInfo }: { headerInfo: any }) => {
         >
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <TouchableOpacity
-                    onPress={() => navigation.goBack()}
+                    onPress={() => {
+                        if (navigation.canGoBack()) {
+                            navigation.goBack();
+                        } else {
+                            navigation.navigate('Gallery');
+                        }
+                    }}
                     style={{
                         paddingRight: 15,
                         paddingVertical: 10,
@@ -84,7 +88,11 @@ const ChatHeader = ({ headerInfo }: { headerInfo: any }) => {
                         <ChatCall
                             userId={headerInfo.receiverId}
                             username={headerInfo.user}
-                            phone={headerInfo.userPhone}
+                            phone={
+                                headerInfo.user.includes('Guest')
+                                    ? null
+                                    : headerInfo.userPhone
+                            }
                         />
                     )}
                 <TouchableOpacity onPress={openHandler}>

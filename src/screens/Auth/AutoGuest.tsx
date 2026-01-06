@@ -1,7 +1,7 @@
 import { ActivityIndicator, ImageBackground, Text, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import textStyles from '../../styles/textStyles';
-import { getFcmToken } from '../../utils/notification';
+import { defaultToken, getFcmToken } from '../../utils/notification';
 import { getUniqueId } from 'react-native-device-info';
 import { displayError } from '../../utils/display';
 import { useAppDispatch } from '../../utils/hooks';
@@ -34,10 +34,10 @@ const AutoGuest = () => {
             setLoadState('load');
             let payload = {
                 deviceId,
-                token: token || undefined,
+                token: token,
                 role: 'guest',
             };
-            dispatch(loginGuest(payload));
+            await dispatch(loginGuest(payload)).unwrap();
         } catch (err) {
             navigation.navigate('Login');
             displayError(err, true);

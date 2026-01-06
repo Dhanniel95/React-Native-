@@ -39,6 +39,9 @@ const chatSlice = createSlice({
         updateUnreadCount: (state, action) => {
             state.unreadCount = action.payload;
         },
+        clearConsultantChat: state => {
+            state.consultantChat = {};
+        },
     },
     extraReducers(builder) {
         builder.addCase(saveChatId.fulfilled, (state, action) => {
@@ -50,6 +53,7 @@ const chatSlice = createSlice({
     },
 });
 
-export const { updateOnlineUsers, updateUnreadCount } = chatSlice.actions;
+export const { updateOnlineUsers, updateUnreadCount, clearConsultantChat } =
+    chatSlice.actions;
 
 export default chatSlice.reducer;

@@ -41,6 +41,12 @@ const ChatRooms = () => {
     const [openModal, setOpenModal] = useState(false);
     const [search, setSearch] = useState('');
 
+    const [guestTotal, setGuestTotal] = useState(0);
+    const [myGuestTotal, setMyGuestTotal] = useState(0);
+    const [customerTotal, setCustomerTotal] = useState(0);
+    const [myCustomerTotal, setMyCustomerTotal] = useState(0);
+    const [braiderTotal, setBraiderTotal] = useState(0);
+
     const debouncedSearch = useDebounce(search);
 
     const socket = getSocket();
@@ -49,17 +55,18 @@ const ChatRooms = () => {
         if (!socket) return;
 
         socket.on('message:new:customer', data => {
-            console.log(data, 'new');
-            listCustomers();
-            listMyCustomers();
+            listCustomers(data?.data);
+            listMyCustomers(data?.data);
         });
         socket.on('message:new', data => {
-            listCustomers();
-            listMyCustomers();
-        });
-        socket.on('message:new:guest', data => {
+            listCustomers(data?.data);
+            listMyCustomers(data?.data);
             listGuests();
             listMyGuests();
+        });
+        socket.on('message:new:guest', data => {
+            listGuests(data?.data);
+            listMyGuests(data?.data);
         });
         socket.on('chatroom:updated', data => {
             listGuests();
@@ -78,7 +85,7 @@ const ChatRooms = () => {
         socket.onAny((event, ...args) => {
             console.log('Got event:', event, args);
         });
-    }, []);
+    }, [isFocused]);
 
     useEffect(() => {
         if (isFocused) {
@@ -103,45 +110,77 @@ const ChatRooms = () => {
         listBraiders();
     };
 
-    const listMyGuests = async () => {
-        try {
-            let res = await chatService.listMyGuestChats();
-            if (Array.isArray(res?.data?.data)) {
-                setMyGuestList(res.data);
-            }
-        } catch (err) {}
-    };
-
-    const listGuests = async () => {
-        try {
-            let res = await chatService.listGuestChats();
-            if (Array.isArray(res?.data?.chatRooms)) {
-                setGuestList(res.data);
-            }
-        } catch (err) {}
-    };
-
-    const listCustomers = async () => {
-        try {
-            setLoad(true);
-            let res = await chatService.listCustomersChats(debouncedSearch);
-            if (Array.isArray(res?.data?.chatRooms)) {
-                setCustomersList(res.data);
-            }
-            setLoad(false);
-        } catch (err) {
-            setLoad(false);
+    const listMyGuests = async (incoming?: any) => {
+        if (incoming?.chat) {
+            updateChatCount(3, incoming);
+        } else {
+            try {
+                let res = await chatService.listMyGuestChats();
+                if (Array.isArray(res?.data?.data)) {
+                    setMyGuestList(res.data);
+                    let total = res.data.data.filter(
+                        (room: any) => room.unreadMessages > 0,
+                    ).length;
+                    setMyGuestTotal(total);
+                }
+            } catch (err) {}
         }
     };
 
-    const listMyCustomers = async () => {
-        try {
-            let res = await chatService.listMyCustomersChats();
-            if (Array.isArray(res?.data?.chatRooms)) {
-                setMyCustomersList(res.data);
+    const listGuests = async (incoming?: any) => {
+        if (incoming?.chat) {
+            updateChatCount(1, incoming);
+        } else {
+            try {
+                let res = await chatService.listGuestChats();
+                if (Array.isArray(res?.data?.chatRooms)) {
+                    setGuestList(res.data);
+                    let total = res.data.chatRooms.filter(
+                        (room: any) => room.unreadMessages > 0,
+                    ).length;
+                    setGuestTotal(total);
+                }
+            } catch (err) {}
+        }
+    };
+
+    const listCustomers = async (incoming?: any) => {
+        if (incoming?.chat) {
+            updateChatCount(2, incoming);
+        } else {
+            try {
+                setLoad(true);
+                let res = await chatService.listCustomersChats(debouncedSearch);
+                if (Array.isArray(res?.data?.chatRooms)) {
+                    setCustomersList(res.data);
+                    let total = res.data.chatRooms.filter(
+                        (room: any) => room.unreadMessages > 0,
+                    ).length;
+                    setCustomerTotal(total);
+                }
+                setLoad(false);
+            } catch (err) {
+                setLoad(false);
             }
-        } catch (err) {
-            displayError(err, true);
+        }
+    };
+
+    const listMyCustomers = async (incoming?: any) => {
+        if (incoming?.chat) {
+            updateChatCount(4, incoming);
+        } else {
+            try {
+                let res = await chatService.listMyCustomersChats();
+                if (Array.isArray(res?.data?.chatRooms)) {
+                    setMyCustomersList(res.data);
+                    let total = res.data.chatRooms.filter(
+                        (room: any) => room.unreadMessages > 0,
+                    ).length;
+                    setMyCustomerTotal(total);
+                }
+            } catch (err) {
+                displayError(err, true);
+            }
         }
     };
 
@@ -150,8 +189,40 @@ const ChatRooms = () => {
             let res = await chatService.listBraidersChats();
             if (Array.isArray(res?.data?.chatRooms)) {
                 setBraidersList(res.data);
+                let total = res.data.chatRooms.filter(
+                    (room: any) => room.unreadMessages > 0,
+                ).length;
+                setBraiderTotal(total);
             }
         } catch (err) {}
+    };
+
+    const updateChatCount = (tab: number, incoming: any) => {
+        let arr = arrayType('chatRooms', tab);
+        let find = arr.find(
+            (a: any) => a?.chat?.chatRoomId === incoming?.chat?.chatRoomId,
+        );
+        if (find) {
+            console.log(find, 'FIND');
+            let newArr = arr.map((a: any) => {
+                if (a?.chat?.chatRoomId === incoming?.chat?.chatRoomId) {
+                    a.unreadMessages = a.unreadMessages + 1;
+                    a.chat.message = incoming.chat.message;
+                }
+                return a;
+            });
+            if (tab === 1) {
+                setGuestList({ ...guestList, chatRooms: newArr });
+            } else if (tab === 2) {
+                setCustomersList({ ...customersList, chatRooms: newArr });
+            } else if (tab === 3) {
+                setMyGuestList({ ...myGuestList, data: newArr });
+            } else if (tab === 4) {
+                setMyCustomersList({ ...myCustomersList, chatRooms: newArr });
+            } else {
+                setBraidersList({ ...braidersList, chatRooms: newArr });
+            }
+        }
     };
 
     const onRefresh = useCallback(async () => {
@@ -162,14 +233,15 @@ const ChatRooms = () => {
         }, 2000);
     }, []);
 
-    const arrayType = (type: string) => {
-        if (activeTab === 1) {
+    const arrayType = (type: string, tab?: number) => {
+        let mainTab = tab || activeTab;
+        if (mainTab === 1) {
             return sortedArr(guestList[type]);
-        } else if (activeTab === 2) {
+        } else if (mainTab === 2) {
             return sortedArr(customersList[type]);
-        } else if (activeTab === 3) {
+        } else if (mainTab === 3) {
             return sortedArr(myGuestList?.data);
-        } else if (activeTab === 4) {
+        } else if (mainTab === 4) {
             return sortedArr(myCustomersList[type]);
         } else {
             return sortedArr(braidersList[type]);
@@ -235,15 +307,11 @@ const ChatRooms = () => {
                     <ChatTabs
                         activeTab={activeTab}
                         setActiveTab={setActiveTab}
-                        guestList={guestList?.cursor?.totalUnreadMessage}
-                        braidersList={braidersList?.cursor?.totalUnreadMessage}
-                        customersList={
-                            customersList?.cursor?.totalUnreadMessage
-                        }
-                        myCustomersList={
-                            myCustomersList?.cursor?.totalUnreadMessage
-                        }
-                        myGuestList={myGuestList?.cursor?.totalUnreadMessage}
+                        guestList={guestTotal}
+                        braidersList={braiderTotal}
+                        customersList={customerTotal}
+                        myCustomersList={myCustomerTotal}
+                        myGuestList={myGuestTotal}
                     />
                 </View>
                 {activeTab === 2 && (

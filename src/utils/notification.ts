@@ -60,7 +60,7 @@ const getFcmToken = async () => {
 };
 
 const defaultToken = () => {
-    return `foP1VqPIQV-s1U4LfaAB4n:APA91bH4Q81iymUvccn-Y7jI1cwhcPQDxZ_I_WbCST2kVO8M2owqAzjP86Ah7X72XlfqccjRdwtUgeJq88NIuHzNvnbxGpuvBXQhJDx9foNbxgZ-ncOq9Cs`;
+    return `e-d_l2tCS-iJPTu745RM36:APA91bEmlipUzffvx4ceeM2ID4WqW-3-8vPTFIUTGQlNTE4d0xdNtwT6_PIXRZz83_Z334FMqcbvGYs-huy2ENyCpUEsFMz_yEqNa7E2iuXftBnGMK1dq90`;
 };
 
 const saveToken = async () => {
