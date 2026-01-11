@@ -26,6 +26,7 @@ const Consult = ({ route }: { route: any }) => {
         if (isFocused) {
             clearAllNotifications();
             loadRooms();
+            console.log('loadog?');
         }
     }, [isFocused, reload]);
 
@@ -38,8 +39,9 @@ const Consult = ({ route }: { route: any }) => {
                 res?.data?.chatRooms?.length > 0
             ) {
                 let id = res.data.chatRooms[0].chatRoomId;
-                let receiver = res.data.chatRooms[0]?.chat?.receiver;
+                let receiver = res.data.chatRooms[0]?.chat?.sender;
                 let count = res.data.chatRooms[0]?.unreadMessages;
+                console.log(res.data.chatRooms[0], 'receiver');
                 dispatch(saveChatId(id));
                 dispatch(consultantChatting(receiver));
                 dispatch(updateUnreadCount(count));
