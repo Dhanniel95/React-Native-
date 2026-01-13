@@ -17,8 +17,10 @@ const Consult = ({ route }: { route: any }) => {
 
     const isFocused = useIsFocused();
 
-    const { userChatRoomId } = useAppSelector(state => state.chat);
-    const { consultantChat } = useAppSelector(state => state.chat);
+    const { userChatRoomId, consultantChat } = useAppSelector(
+        state => state.chat,
+    );
+    const { user } = useAppSelector(state => state.auth);
 
     const reload = route?.params?.reload;
 
@@ -39,11 +41,15 @@ const Consult = ({ route }: { route: any }) => {
                 res?.data?.chatRooms?.length > 0
             ) {
                 let id = res.data.chatRooms[0].chatRoomId;
-                let receiver = res.data.chatRooms[0]?.chat?.sender;
+                let sender = res.data.chatRooms[0]?.chat?.sender;
+                let receiver = res.data.chatRooms[0]?.chat?.receiver;
                 let count = res.data.chatRooms[0]?.unreadMessages;
-                console.log(res.data.chatRooms[0], 'receiver');
                 dispatch(saveChatId(id));
-                dispatch(consultantChatting(receiver));
+                dispatch(
+                    consultantChatting(
+                        sender?.userId == user.userId ? receiver : sender,
+                    ),
+                );
                 dispatch(updateUnreadCount(count));
             } else {
                 dispatch(saveChatId(''));
