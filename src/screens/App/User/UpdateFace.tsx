@@ -8,7 +8,7 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import { useAppDispatch } from '../../../utils/hooks';
+import { useAppDispatch, useAppSelector } from '../../../utils/hooks';
 import {
     Camera,
     useCameraDevice,
@@ -28,6 +28,8 @@ const UpdateFace = () => {
     const navigation = useNavigation();
 
     const dispatch = useAppDispatch();
+
+    const { user } = useAppSelector(state => state.auth);
 
     const device = useCameraDevice('front');
 
@@ -91,6 +93,7 @@ const UpdateFace = () => {
                 bgColor={colors.dark}
                 iconColor={colors.white}
                 title="Face Verification"
+                disabled={user.faceIdPhotoUrl ? false : true}
             />
             {screenState === 'failed' ? (
                 <View style={styles.loadingScreen}>

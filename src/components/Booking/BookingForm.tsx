@@ -155,7 +155,8 @@ const BookingForm = ({
             setDuration(
                 formatTime(totalDuration / (selectedBraiders.length || 1)),
             );
-            let finalTransport = (transportFee || 0) * braiderCount;
+            let finalTransport = (transportFee || 1500) * braiderCount;
+
             let finalPrice =
                 (braiderCount > 1
                     ? totalPrice + 0.6 * totalPrice

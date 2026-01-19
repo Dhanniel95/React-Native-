@@ -17,7 +17,7 @@ import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { useNavigation } from '@react-navigation/native';
 import UpdateFace from '../../screens/App/User/UpdateFace';
 import Reel from '../../screens/App/User/Reel';
-import { listNotifications } from '../../redux/basic/basicSlice';
+import { getTransport, listNotifications } from '../../redux/basic/basicSlice';
 import BookingList from '../../screens/App/Pro/BookingList';
 import ActivityBooks from '../../screens/App/Pro/ActivityBooks';
 import MagicLogin from '../../screens/Auth/MagicLogin';
@@ -57,6 +57,7 @@ const AppStack = () => {
 
     useEffect(() => {
         dispatch(listNotifications());
+        dispatch(getTransport());
     }, []);
 
     return (

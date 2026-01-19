@@ -8,10 +8,12 @@ const GoBack = ({
     iconColor,
     bgColor,
     title,
+    disabled,
 }: {
     iconColor?: string;
     bgColor?: string;
     title?: string;
+    disabled?: boolean;
 }) => {
     const navigation = useNavigation();
 
@@ -28,6 +30,7 @@ const GoBack = ({
             <TouchableOpacity
                 onPress={() => navigation.goBack()}
                 style={[styles.pos, { backgroundColor: bgColor || '#EBF4F8' }]}
+                disabled={disabled}
             >
                 <Icon
                     type="materialcommunityicons"

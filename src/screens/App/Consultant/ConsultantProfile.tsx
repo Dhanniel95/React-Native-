@@ -190,10 +190,12 @@ const ConsultantProfile = () => {
                                                         },
                                                     ]}
                                                 >
-                                                    {profile.salesPerformance
-                                                        .actualThisMonth /
+                                                    {(
                                                         profile.salesPerformance
-                                                            .targetAmount}
+                                                            .actualThisMonth /
+                                                        profile.salesPerformance
+                                                            .targetAmount
+                                                    ).toFixed(3)}
                                                     %
                                                 </Text>
                                                 <Text
@@ -226,13 +228,18 @@ const ConsultantProfile = () => {
                                             <Text
                                                 style={[
                                                     textStyles.textBold,
-                                                    { fontSize: 18 },
+                                                    {
+                                                        fontSize: 18,
+                                                        textAlign: 'center',
+                                                    },
                                                 ]}
                                             >
-                                                {profile.salesPerformance
-                                                    .actualThisMonth /
+                                                {(
                                                     profile.salesPerformance
-                                                        .targetAmount}
+                                                        .actualThisMonth /
+                                                    profile.salesPerformance
+                                                        .targetAmount
+                                                ).toFixed(3)}
                                                 %
                                             </Text>
                                             <Text

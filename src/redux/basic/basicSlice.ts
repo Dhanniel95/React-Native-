@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import bookService from '../book/bookService';
 import basicService from './basicService';
+import { displayError } from '../../utils/display';
 
 const initialState = {
     notiList: [],
@@ -21,12 +22,15 @@ export const listNotifications = createAsyncThunk(
 export const getTransport = createAsyncThunk('basic/transport', async () => {
     try {
         let res = await bookService.transportInfo();
+        console.log(res, 'RESS');
         if (res?.price) {
             return res.price / 100;
         } else {
             return 0;
         }
-    } catch (error: any) {}
+    } catch (error: any) {
+        console.log(displayError(error, false), 'From Transport');
+    }
 });
 
 const basicSlice = createSlice({
