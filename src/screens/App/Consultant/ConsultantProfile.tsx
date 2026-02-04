@@ -53,8 +53,14 @@ const ConsultantProfile = () => {
                         >
                             <Image
                                 source={
+                                    profile?.user?.profilePhotoUrl ||
                                     user.faceIdPhotoUrl
-                                        ? { uri: user.faceIdPhotoUrl }
+                                        ? {
+                                              uri:
+                                                  profile?.user
+                                                      ?.profilePhotoUrl ||
+                                                  user.faceIdPhotoUrl,
+                                          }
                                         : require('../../../assets/images/profile.png')
                                 }
                                 style={styles.img}

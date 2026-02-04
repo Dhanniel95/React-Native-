@@ -26,6 +26,7 @@ import { formatCurrency } from '../../../utils/currency';
 import { ZegoSendCallInvitationButton } from '@zegocloud/zego-uikit-prebuilt-call-rn';
 import { formatTime } from '../../../utils/datetime';
 import ModalComponent from '../../../components/ModalComponent';
+import Video from 'react-native-video';
 
 const ActivityBooks = () => {
     const route = useRoute<RouteProp<AppStackParamList, 'ActivityBooks'>>();
@@ -201,9 +202,7 @@ const ActivityBooks = () => {
                                 {
                                     marginBottom: 20,
                                     flexDirection: 'row',
-                                    justifyContent: isPermitted()
-                                        ? 'center'
-                                        : 'space-between',
+                                    justifyContent: 'space-between',
                                     flexWrap: 'wrap',
                                 },
                             ]}
@@ -241,10 +240,7 @@ const ActivityBooks = () => {
                                 </Text>
                             </TouchableOpacity>
                             <TouchableOpacity
-                                style={[
-                                    styles.btn,
-                                    { marginTop: isPermitted() ? 20 : 0 },
-                                ]}
+                                style={[styles.btn]}
                                 onPress={chatConsultant}
                                 disabled={loadChat}
                             >
@@ -411,7 +407,11 @@ const ActivityBooks = () => {
                                 {formatTime(
                                     sub.reduce(
                                         (a: any, b: any) =>
-                                            a + b.subService.duration,
+                                            a +
+                                            b.subService.duration *
+                                                (bookingData?.assistants
+                                                    .length +
+                                                    1),
                                         0,
                                     ),
                                 )}
@@ -471,8 +471,41 @@ const ActivityBooks = () => {
                                     Description:
                                 </Text>
                                 <Text style={[textStyles.textMid]}>
-                                    {bookingData.description?.text || '--'}
+                                    {bookingData.description?.text || ''}
                                 </Text>
+                                {bookingData.description?.media && (
+                                    <View style={{ marginTop: 20 }}>
+                                        {bookingData.description.media.includes(
+                                            '/video/upload/',
+                                        ) ? (
+                                            <Video
+                                                source={{
+                                                    uri: bookingData.description
+                                                        .media,
+                                                }}
+                                                style={{
+                                                    width: '100%',
+                                                    height: 400,
+                                                }}
+                                                resizeMode="contain"
+                                                repeat={false}
+                                                controls
+                                                paused
+                                            />
+                                        ) : (
+                                            <Image
+                                                source={{
+                                                    uri: bookingData.description
+                                                        .media,
+                                                }}
+                                                style={{
+                                                    height: 300,
+                                                    width: 300,
+                                                }}
+                                            />
+                                        )}
+                                    </View>
+                                )}
                             </View>
                         )}
                     </ScrollView>

@@ -83,6 +83,7 @@ const HomeScreen = () => {
         try {
             let res = await bookService.listBookings();
             if (Array.isArray(res?.data)) {
+                console.log(res.data, 'app');
                 let appoints = res.data.filter((item: any) => {
                     return item.pinStatus != null;
                 });

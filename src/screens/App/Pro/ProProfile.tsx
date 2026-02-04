@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useAppSelector } from '../../../utils/hooks';
 import basicService from '../../../redux/basic/basicService';
-import { displayError } from '../../../utils/display';
 import textStyles from '../../../styles/textStyles';
 import TabProfile from '../../../components/Pro/TabProfile';
 import TaskTarget from '../../../components/Pro/TaskTarget';
@@ -30,10 +29,10 @@ const ProProfile = () => {
         try {
             setLoad(true);
             let res = await basicService.getProStats(user.userId.toString());
+            console.log(res, 'RESSTATS');
             setStats(res);
             setLoad(false);
         } catch (err) {
-            console.log(displayError(err, false), 'err');
             setLoad(false);
         }
     };

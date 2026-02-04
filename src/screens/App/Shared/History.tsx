@@ -53,7 +53,7 @@ const HistoryScreen = () => {
                 {list.length > 0 ? (
                     <FlatList
                         data={list}
-                        keyExtractor={(item: any) => item.id.toString()}
+                        keyExtractor={(item: any, index) => index.toString()}
                         renderItem={({ item }) => (
                             <EachTransaction item={item} />
                         )}
